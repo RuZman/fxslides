@@ -9,7 +9,6 @@ import de.ruzman.fxslides.presentation.controller.slides.Slide1;
 import io.datafx.controller.ViewConfiguration;
 import io.datafx.controller.flow.FlowException;
 import javafx.application.Application;
-import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
 
 public class Presentation extends Application {
