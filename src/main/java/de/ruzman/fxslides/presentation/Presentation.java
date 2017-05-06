@@ -1,14 +1,14 @@
 package de.ruzman.fxslides.presentation;
 
+import static java.util.Locale.GERMAN;
+import static javafx.scene.input.KeyCombination.NO_MATCH;
+
 import java.util.ResourceBundle;
 
 import de.ruzman.fxslides.presentation.controller.slides.Slide1;
-import io.datafx.controller.flow.Flow;
+import io.datafx.controller.ViewConfiguration;
 import io.datafx.controller.flow.FlowException;
 import javafx.application.Application;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
 
@@ -20,9 +20,14 @@ public class Presentation extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			Flow flow = new Flow(Slide1.class);
+			String baseName = getClass().getPackage().getName() + ".labels.labels";
 			
-			primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+			ViewConfiguration viewConfiguration = new ViewConfiguration();
+			viewConfiguration.setResources(ResourceBundle.getBundle(baseName, GERMAN));
+			
+			FlowFixed flow = new FlowFixed(Slide1.class, viewConfiguration);
+			
+			primaryStage.setFullScreenExitKeyCombination(NO_MATCH);
 			primaryStage.setFullScreen(true);
 			
 			flow.startInStage(primaryStage);
