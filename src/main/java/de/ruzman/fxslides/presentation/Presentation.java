@@ -32,7 +32,7 @@ public class Presentation extends Application {
 			
 			flow.startInStage(primaryStage);
 			
-			String css = Presentation.class.getResource("styles.css").toExternalForm();
+			String css = Presentation.class.getResource("style.css").toExternalForm();
 			primaryStage.getScene().getStylesheets().add(css);			
 		} catch(FlowException ex) {
 			ex.printStackTrace();
