@@ -1,5 +1,10 @@
 package de.ruzman.fxslides.presentation;
 
+import java.util.ResourceBundle;
+
+import de.ruzman.fxslides.presentation.controller.slides.Slide1;
+import io.datafx.controller.flow.Flow;
+import io.datafx.controller.flow.FlowException;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -14,16 +19,18 @@ public class Presentation extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-		primaryStage.setScene(new Scene(new Group()));
-		
-		primaryStage.setHeight(768);
-		primaryStage.setWidth(1376);
-		primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
-		primaryStage.setFullScreen(true);
-		
-		String css = Presentation.class.getResource("styles.css").toExternalForm();
-		primaryStage.getScene().getStylesheets().add(css);
-		
-		primaryStage.show();
+		try {
+			Flow flow = new Flow(Slide1.class);
+			
+			primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+			primaryStage.setFullScreen(true);
+			
+			flow.startInStage(primaryStage);
+			
+			String css = Presentation.class.getResource("styles.css").toExternalForm();
+			primaryStage.getScene().getStylesheets().add(css);			
+		} catch(FlowException ex) {
+			ex.printStackTrace();
+		}
 	}
 }
