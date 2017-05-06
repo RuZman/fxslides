@@ -6,6 +6,8 @@ import static javafx.scene.input.KeyCombination.NO_MATCH;
 import java.util.ResourceBundle;
 
 import de.ruzman.fxslides.presentation.controller.slides.Slide1;
+import de.ruzman.leap.LeapApp;
+import de.ruzman.leap.TrackingBox;
 import io.datafx.controller.ViewConfiguration;
 import io.datafx.controller.flow.FlowException;
 import javafx.application.Application;
@@ -18,6 +20,11 @@ public class Presentation extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
+		new LeapApp.LeapAppBuilder(primaryStage)
+			.maximumHandNumber(1)
+			.trackingBox(new TrackingBox(200f, 100f, 100f))
+			.initLeapApp();
+		
 		try {
 			String baseName = getClass().getPackage().getName() + ".labels.labels";
 			
