@@ -31,6 +31,8 @@ public class LeapStageDecorator implements PointMotionListener {
 	private Stage stage;
 	private CursorPane cursorPane;
 	private Map<Integer, FXCursor<?>> pointers;
+	
+	// Test
 
 	public LeapStageDecorator(Stage stage) {
 		LeapApp.getMotionRegistry().addListener(this);
