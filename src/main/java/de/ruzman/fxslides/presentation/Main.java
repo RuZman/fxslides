@@ -3,7 +3,7 @@ package de.ruzman.fxslides.presentation;
 import de.ruzman.hui.DeviceEvent;
 import de.ruzman.hui.DeviceHandler;
 import de.ruzman.hui.DeviceListener;
-import de.ruzman.leap.NativeLibrary;
+import de.ruzman.leap.hui.NativeLibrary;
 import de.ruzman.leap.hui.leap.LeapMotion;
 
 public class Main implements DeviceListener {

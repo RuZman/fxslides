@@ -11,6 +11,7 @@ import com.leapmotion.leap.Controller;
 
 import de.ruzman.leap.event.LeapEventHandler;
 import de.ruzman.leap.fx.LeapStageDecorator;
+import de.ruzman.leap.hui.NativeLibrary;
 
 /**
  * LeapApp contains the configuration of a Leap Motion project. This class

@@ -1,4 +1,4 @@
-package de.ruzman.leap;
+package de.ruzman.leap.hui;
 
 import java.io.File;
 import java.lang.reflect.Field;
