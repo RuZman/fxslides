@@ -1,33 +1,41 @@
 package de.ruzman.leap.fx;
 
 import static de.ruzman.newfx.event.CursorEvent.ANY;
-import static de.ruzman.newfx.event.CursorEvent.CURSOR_ENTERED;
-import static de.ruzman.newfx.event.CursorEvent.CURSOR_LEFT;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.sun.glass.ui.Application;
+import com.sun.glass.ui.Robot;
+
+import de.ruzman.leap.LeapApp;
+import de.ruzman.leap.event.PointEvent;
+import de.ruzman.leap.event.PointMotionListener;
+import de.ruzman.newfx.control.CursorNodeFactory;
+import de.ruzman.newfx.control.CursorPane;
+import de.ruzman.newfx.control.FXCursor;
+import de.ruzman.newfx.event.CursorEvent;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.ButtonBase;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.ClosePath;
-import javafx.scene.shape.LineTo;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
 import javafx.stage.Stage;
-import de.ruzman.newfx.control.CursorNodeFactory;
-import de.ruzman.newfx.control.CursorPane;
-import de.ruzman.newfx.control.DelayProgress;
-import de.ruzman.newfx.event.CursorEvent;
 
-public class LeapStageDecorator {
+public class LeapStageDecorator implements PointMotionListener {
 	private Stage stage;
+	private CursorPane cursorPane;
+	private Map<Integer, FXCursor<?>> pointers;
 
 	public LeapStageDecorator(Stage stage) {
+		LeapApp.getMotionRegistry().addListener(this);
 		this.stage = stage;
+		this.pointers = new HashMap<>();
 
 		stage.sceneProperty().addListener(new ChangeListener<Scene>() {
 			@Override
@@ -48,72 +56,63 @@ public class LeapStageDecorator {
 	}
 
 	private void decorateStage(Node root) {
-		CursorPane cursorPane = new CursorPane();
-		LeapFXCursor<StackPane> cursor = new LeapFXCursor<>();
+		cursorPane = new CursorPane();
+		stage.getScene().setRoot(new StackPane(root, cursorPane));
+	}
+
+	@Override
+	public void enteredViewoport(PointEvent event) {		
+		if(pointers.containsKey(event.getSource().id())) {
+			return;
+		}
+		
+		if(pointers.isEmpty()) {
+			cursorPane.getScene().setCursor(Cursor.NONE);
+		}
+		
+		FXCursor<Circle> cursor = new FXCursor<>();
 		cursor.setAdjustX(-8);
 		cursor.setAdjustY(-8);
-		cursor.setCursorNodeFactory(new CursorNodeFactory<StackPane>() {
+		cursor.setCursorNodeFactory(new CursorNodeFactory<Circle>() {
 
 			@Override
-			public StackPane createCursor() {
-				Circle circle = new Circle(0, 0, 18, Color.rgb(240, 240, 240));
-				circle.setTranslateY(20);
-
-				Circle circle2 = new Circle(0, 0, 20, Color.rgb(60, 225, 255));
-				circle2.setTranslateY(20);
-
-				Path path = new Path();
-				path.getElements().add(new MoveTo(0, 0));
-				path.getElements().add(new LineTo(0, 40));
-				path.getElements().add(new LineTo(35, 28));
-				path.getElements().add(new ClosePath());
-				path.setFill(Color.rgb(60, 225, 255));
-				path.setStrokeWidth(0);
-				path.setTranslateX(-2);
-
-				Circle circle3 = new Circle(0, 0, 26, Color.TRANSPARENT);
-				circle3.setTranslateY(20);
-				circle3.setVisible(false);
-				
-				return new StackPane(circle3, path, circle2, circle);
+			public Circle createCursor() {
+				return new Circle(0, 0, 18, Color.rgb(240, 240, 240));
 			}
 		});
-
-		DelayProgress progress = new DelayProgress(250, 0, 0, 130, 26, Color.rgb(60, 225, 255));
-		progress.setTranslateY(46);
-		progress.setTranslateX(26);
-		cursor.getNode().getChildren().add(0, progress);
-		// cursor.getNode().getChildren().add(0, circle);
-		progress.setVisible(false);
+		
 		cursor.getNode().addEventHandler(ANY, new EventHandler<CursorEvent>() {
 			@Override
 			public void handle(CursorEvent event) {
 				event.getTragetNode().fireEvent(event);
-				if (event.getEventType().equals(CURSOR_ENTERED)) {
-					if (event.getTragetNode() instanceof ButtonBase) {
-						ButtonBase buttonBase = (ButtonBase) event.getTragetNode();
-
-						progress.setVisible(true);
-						progress.start(new Runnable() {
-							@Override
-							public void run() {
-								buttonBase.fire();
-							}
-						});
-					}
-				}
-				if (event.getEventType().equals(CURSOR_LEFT)) {
-					if (event.getTragetNode() instanceof ButtonBase) {
-						progress.setVisible(false);
-						progress.reset();
-					}
-				}
 			}
 
 		});
+		
+		cursorPane.addCursor(cursor);
+		cursor.setVisible(true);
+		pointers.put(event.getSource().id(), cursor);
+	}
 
-		cursorPane.setCursor(cursor);
-		cursor.setVisible(false);
-		stage.getScene().setRoot(new StackPane(root, cursorPane));
+	@Override
+	public void moved(PointEvent event) {
+		pointers.get(event.getSource().id()).move(event.getX(), event.getY());
+	}
+
+	@Override
+	public void leftViewport(PointEvent event) {
+		// FIXME: Should remove the pointer from cursorPane and not only set is invisible.
+		pointers.get(event.getSource().id()).setVisible(false);;
+		pointers.remove(event.getSource().id());
+		
+		if(pointers.size() == 0) {
+			restoreMouseOnFXCursorPosition(event.getX(), event.getY());
+		}
+	}
+	
+	private void restoreMouseOnFXCursorPosition(Float x, Float y) {
+		Robot robot = Application.GetApplication().createRobot();
+		robot.mouseMove(x.intValue(), y.intValue());
+		cursorPane.getScene().setCursor(Cursor.DEFAULT);
 	}
 }

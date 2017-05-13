@@ -21,7 +21,6 @@ public class Presentation extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		new LeapApp.LeapAppBuilder(primaryStage)
-			.maximumHandNumber(1)
 			.trackingBox(new TrackingBox(200f, 100f, 100f))
 			.initLeapApp();
 		
