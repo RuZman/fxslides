@@ -1,19 +1,20 @@
 package de.ruzman.hui;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 
 import com.leapmotion.leap.Controller;
 import com.leapmotion.leap.Vector;
 
 import de.ruzman.hui.event.SkeletonEvent;
 import de.ruzman.hui.event.SkeletonListener;
-import de.ruzman.hui.skeleton.Hand;
+import de.ruzman.hui.skeleton.Hand.HandBuilder;
 import de.ruzman.hui.skeleton.Point;
 import de.ruzman.hui.skeleton.Skeleton;
+import de.ruzman.hui.skeleton.Skeleton.SkeletonBuilder;
+import de.ruzman.hui.skeleton.Skeleton.Type;
+import de.ruzman.hui.skeleton.World;
 import de.ruzman.leap.LeapApp;
 import de.ruzman.leap.event.LeapEvent;
 import de.ruzman.leap.event.LeapEventHandler;
@@ -21,8 +22,7 @@ import de.ruzman.leap.event.LeapListener;
 
 public class SkeletonRegistry implements LeapListener {
 	private List<SkeletonListener> skeletonListeners = new ArrayList<>();
-	
-	private Set<Integer> handIDs = new HashSet<>();
+	private World lastWorld;
 
 	public SkeletonRegistry() {
 		LeapEventHandler.addLeapListener(this);
@@ -34,31 +34,39 @@ public class SkeletonRegistry implements LeapListener {
 
 	@Override
 	public void onFrame(Controller controller) {
-		List<Hand> hands = new ArrayList<>();
+		World newWorld = new World();
+		addHands(newWorld, controller);
 		
-		Iterator<Integer> it = handIDs.iterator();
-		
-		while(it.hasNext()) {
-			Integer handId = it.next();
-			
-			if(!controller.frame().hand(handId).isValid()) {
-				Point source = new Point(null, LeapApp.getTrackingBox(), new Vector(), false, false);
-				Point palmPosition = new Point(source, null, null, false, true);
-				hands.add(new Hand(handId, palmPosition));
-				it.remove();
-			}
+		if(lastWorld != null) {
+			lastWorld.addMissingSkeletonParts(newWorld);
 		}
-		
-		for (com.leapmotion.leap.Hand hand : controller.frame().hands()) {
-			Point source = new Point(null, LeapApp.getTrackingBox(), new Vector(), false, false);
-			Point palmPosition = new Point(source, null, hand.stabilizedPalmPosition(), !handIDs.contains(hand.id()), false);
-			hands.add(new Hand(hand.id(), palmPosition));
-			handIDs.add(hand.id());
+		newWorld.create();
+		for(Skeleton skeleton: newWorld.getSkeletons()) {
+			SkeletonEvent event = new SkeletonEvent(skeleton);
+			skeletonListeners.forEach(e -> e.onUpdate(event));
 		}
+		lastWorld = newWorld;
+	}
 
-		Skeleton skeleton = new Skeleton.SkeletonBuilder().addHands(hands).createSkeleton();
-		SkeletonEvent event = new SkeletonEvent(skeleton);
-		skeletonListeners.forEach(e -> e.onUpdate(event));
+	private void addHands(World newWorld, Controller controller) {
+		Point source = new Point(null, LeapApp.getTrackingBox(), new Vector());
+		for (com.leapmotion.leap.Hand hand : controller.frame().hands()) {
+			Optional<SkeletonBuilder> skeletonBuilder = newWorld.containsSkeletonPart(Type.HAND, hand.id());
+			
+			if(!skeletonBuilder.isPresent()) {
+				skeletonBuilder = Optional.of(new SkeletonBuilder());
+				newWorld.addSkeletonPart(skeletonBuilder.get(), skeletonBuilder.get(), Type.SKELETON, 0);
+			}
+			
+			Point palmPosition = new Point(source, null, hand.stabilizedPalmPosition());
+			
+			HandBuilder handBuilder = new HandBuilder(hand.id());
+			handBuilder.palmPosition(palmPosition);
+			handBuilder.hasEntered(lastWorld);
+			
+			skeletonBuilder.get().addHand(handBuilder);
+			newWorld.addSkeletonPart(skeletonBuilder.get(), handBuilder, Type.HAND, hand.id());
+		}
 	}
 
 	@Override

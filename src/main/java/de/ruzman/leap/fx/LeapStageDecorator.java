@@ -30,7 +30,7 @@ import javafx.stage.Stage;
 public class LeapStageDecorator implements SkeletonListener {
 	private Stage stage;
 	private CursorPane cursorPane;
-	private Map<Long, FXCursor> pointers;
+	private Map<Integer, FXCursor> pointers;
 	private CursorNodeFactory cursorNodeFactory;
 
 	public LeapStageDecorator(Stage stage, CursorNodeFactory cursorNodeFactory) {
@@ -74,13 +74,23 @@ public class LeapStageDecorator implements SkeletonListener {
 
 	@Override
 	public void onUpdate(SkeletonEvent event) {
-		for(Hand hand: event.getSkeleton().getHands()) {		
+		for(Hand hand: event.getSkeleton().getHands()) {
+			if(hand.hasLeft()) {
+				// FIXME: Should remove the pointer from cursorPane and not only set is invisible.
+				pointers.get(hand.getId()).setVisible(false);
+				
+				if(pointers.size() == 1) {
+					restoreMouseOnFXCursorPosition(pointers.get(hand.getId()).getNode().getTranslateX(), pointers.get(hand.getId()).getNode().getTranslateY());
+				}
+				pointers.remove(hand.getId());
+			} 
+			
 			if(!hand.getPalmPosition().isPresent()) {
 				continue;
 			}			
 			Point palmPosition = hand.getPalmPosition().get();
 			
-			if(palmPosition.hasEntered()) {
+			if(hand.hasEntered()) {
 				if(pointers.containsKey(hand.getId())) {
 					return;
 				}
@@ -107,14 +117,6 @@ public class LeapStageDecorator implements SkeletonListener {
 				pointers.get(hand.getId()).move(palmPosition.getScreenPosition().getX(), palmPosition.getScreenPosition().getY());
 				cursor.setVisible(true);
 	
-			} else if(palmPosition.hasLeft()) {
-				// FIXME: Should remove the pointer from cursorPane and not only set is invisible.
-				pointers.get(hand.getId()).setVisible(false);;
-				
-				if(pointers.size() == 1) {
-					restoreMouseOnFXCursorPosition(pointers.get(hand.getId()).getNode().getTranslateX(), pointers.get(hand.getId()).getNode().getTranslateY());
-				}
-				pointers.remove(hand.getId());
 			} else {
 				pointers.get(hand.getId()).move(palmPosition.getScreenPosition().getX(), palmPosition.getScreenPosition().getY());
 			}
