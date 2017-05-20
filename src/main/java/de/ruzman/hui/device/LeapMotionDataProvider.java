@@ -26,11 +26,15 @@ public class LeapMotionDataProvider implements LeapListener, DataProvider {
 	public void addHands(World newWorld, World lastWorld) {
 		Point source = new Point(null, LeapApp.getTrackingBox(), new Vector());
 		for (com.leapmotion.leap.Hand hand : frame.hands()) {
+			Optional<SkeletonBuilder> lastSkeletonBuilder = lastWorld.containsSkeletonPart(Type.HAND, hand.id());			
 			Optional<SkeletonBuilder> skeletonBuilder = newWorld.containsSkeletonPart(Type.HAND, hand.id());
 			
-			if(!skeletonBuilder.isPresent()) {
+			if(!lastSkeletonBuilder.isPresent()) {
 				skeletonBuilder = Optional.of(new SkeletonBuilder());
-				newWorld.addSkeletonPart(skeletonBuilder.get(), skeletonBuilder.get(), Type.SKELETON, 0);
+				newWorld.addSkeletonPart(skeletonBuilder.get(), skeletonBuilder.get(), Type.SKELETON, skeletonBuilder.get().getId());
+			} else {
+				skeletonBuilder = Optional.of(new SkeletonBuilder(Optional.of(lastSkeletonBuilder.get().getId())));
+				newWorld.addSkeletonPart(skeletonBuilder.get(), skeletonBuilder.get(), Type.SKELETON, skeletonBuilder.get().getId());
 			}
 			
 			Point palmPosition = new Point(source, null, hand.stabilizedPalmPosition());

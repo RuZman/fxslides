@@ -15,6 +15,8 @@ public class Slide1 implements SkeletonListener {
 
 	@Override
 	public void onUpdate(SkeletonEvent event) {
-		//System.out.println(event.getSkeleton().getHands().size());
+		if(event.getSkeleton().hasLeft()) {
+			System.out.println(event.getSkeleton().getId());
+		}
 	}
 }

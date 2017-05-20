@@ -64,7 +64,7 @@ public class World {
 
 				
 				if(!handBuilder.isPresent() && !hand.hasLeft()) {
-					newSkeletonBuilder.get().handBuilders.add(new HandBuilder(hand.getId()).hasLeft(true));
+					newSkeletonBuilder.get().getHandBuilders().add(new HandBuilder(hand.getId()).hasLeft(true));
 				}
 			}
 		}
