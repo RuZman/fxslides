@@ -23,10 +23,6 @@ public class LeapMotionDataProvider implements LeapListener, DataProvider {
 		LeapEventHandler.addLeapListener(this);
 	}
 	
-	@Override
-	public void loadData() {
-	}
-	
 	public void addHands(World newWorld, World lastWorld) {
 		Point source = new Point(null, LeapApp.getTrackingBox(), new Vector());
 		for (com.leapmotion.leap.Hand hand : frame.hands()) {
@@ -56,9 +52,5 @@ public class LeapMotionDataProvider implements LeapListener, DataProvider {
 	@Override
 	public void statusChanged(LeapEvent event) {
 
-	}
-
-	@Override
-	public void init() {
 	}
 }
