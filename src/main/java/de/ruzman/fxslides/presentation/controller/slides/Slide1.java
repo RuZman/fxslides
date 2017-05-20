@@ -1,6 +1,6 @@
 package de.ruzman.fxslides.presentation.controller.slides;
 
-import de.ruzman.hui.SkeletonRegistry;
+import de.ruzman.hui.SkeletonApp;
 import de.ruzman.hui.event.SkeletonEvent;
 import de.ruzman.hui.event.SkeletonListener;
 import io.datafx.controller.FXMLController;
@@ -10,11 +10,11 @@ import javafx.fxml.FXML;
 public class Slide1 implements SkeletonListener {
     @FXML
     public void initialize() {
-        new SkeletonRegistry().addListener(this);
+        SkeletonApp.addListener(this);
     }
 
 	@Override
 	public void onUpdate(SkeletonEvent event) {
-		System.out.println(event.getSkeleton());
+		//System.out.println(event.getSkeleton().getHands().size());
 	}
 }

@@ -1,23 +1,15 @@
 package de.ruzman.leap;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.stage.Stage;
-import javafx.util.Duration;
-
-import static de.ruzman.newfx.event.CursorEvent.ANY;
-
 import com.leapmotion.leap.Controller;
 
 import de.ruzman.leap.event.LeapEventHandler;
 import de.ruzman.leap.fx.LeapStageDecorator;
 import de.ruzman.newfx.control.CursorNodeFactory;
-import de.ruzman.newfx.event.CursorEvent;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
 
 /**
  * LeapApp contains the configuration of a Leap Motion project. This class
@@ -33,8 +25,6 @@ public final class LeapApp {
 	private int maximumHandNumber = Integer.MAX_VALUE;
 	private double trackedAreaWidth;
 	private double trackedAreaHeight;
-	private boolean usePolling;
-	private boolean stopPollingOnFocusLost;
 	private LeapStageDecorator leapStageDecorator;
 
 	private Controller controller;
@@ -63,7 +53,6 @@ public final class LeapApp {
 					trackedAreaHeight = newValue.doubleValue();
 				}
 			});
-			synchronizeWithLeapMotion();
 
 			if (shouldDecorateStage) {				
 				leapStageDecorator = new LeapStageDecorator(stage, cursorNodeFactory);
@@ -74,21 +63,6 @@ public final class LeapApp {
 
 		setMinimumHandNumber(minimumHandNumber);
 		setMaximumHandNumber(maximumHandNumber);
-
-		this.usePolling = usePolling;
-		this.stopPollingOnFocusLost = stopPollingOnFocusLost;
-
-		// FIXME: Beim doppelten Aufruf ist das nicht mehr korrekt.
-		if (!usePolling) {
-			controller.addListener(LeapEventHandler.getInstance());
-		}
-	}
-
-	private void synchronizeWithLeapMotion() {
-		Timeline timeline = new Timeline();
-		timeline.setCycleCount(Timeline.INDEFINITE);
-		timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1.0 / 60.0), ea -> LeapApp.update()));
-		timeline.play();
 	}
 
 	public static TrackingBox getTrackingBox() {
@@ -151,13 +125,7 @@ public final class LeapApp {
 	public static void setCursorNodeFactory(CursorNodeFactory cursorNodeFactory) {
 		instance.leapStageDecorator.setCursorNodeFactory(cursorNodeFactory);
 	}
-
-	public static void update() {
-		if (instance.usePolling) {
-			LeapEventHandler.update();
-		}
-	}
-
+	
 	public static void destroy() {
 		LeapEventHandler.removeAllLeapListener();
 		instance.controller.delete();
@@ -169,10 +137,6 @@ public final class LeapApp {
 			instance = null;
 			System.exit(0);
 		}
-	}
-
-	public static boolean stopPollingOnFocusLost() {
-		return instance.stopPollingOnFocusLost;
 	}
 
 	/**

@@ -6,6 +6,7 @@ import static javafx.scene.input.KeyCombination.NO_MATCH;
 import java.util.ResourceBundle;
 
 import de.ruzman.fxslides.presentation.controller.slides.Slide1;
+import de.ruzman.hui.SkeletonApp;
 import de.ruzman.leap.LeapApp;
 import de.ruzman.leap.TrackingBox;
 import io.datafx.controller.ViewConfiguration;
@@ -20,9 +21,10 @@ public class Presentation extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-		new LeapApp.LeapAppBuilder(primaryStage)
-			.trackingBox(new TrackingBox(200f, 100f, 100f))
-			.initLeapApp();
+		new SkeletonApp.SkeletonAppBuilder()
+			.initLeapMotion(new LeapApp.LeapAppBuilder(primaryStage)
+				.trackingBox(new TrackingBox(200f, 100f, 100f)))
+			.createHuiApp();
 		
 		try {
 			String baseName = getClass().getPackage().getName() + ".labels.labels";

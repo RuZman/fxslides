@@ -8,9 +8,11 @@ import java.util.Map;
 import com.sun.glass.ui.Application;
 import com.sun.glass.ui.Robot;
 
-import de.ruzman.leap.LeapApp;
-import de.ruzman.leap.event.PointEvent;
-import de.ruzman.leap.event.PointMotionListener;
+import de.ruzman.hui.SkeletonApp;
+import de.ruzman.hui.event.SkeletonEvent;
+import de.ruzman.hui.event.SkeletonListener;
+import de.ruzman.hui.skeleton.Hand;
+import de.ruzman.hui.skeleton.Point;
 import de.ruzman.newfx.control.CursorNodeFactory;
 import de.ruzman.newfx.control.CursorPane;
 import de.ruzman.newfx.control.FXCursor;
@@ -23,18 +25,16 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
-public class LeapStageDecorator implements PointMotionListener {
+public class LeapStageDecorator implements SkeletonListener {
 	private Stage stage;
 	private CursorPane cursorPane;
-	private Map<Integer, FXCursor> pointers;
+	private Map<Long, FXCursor> pointers;
 	private CursorNodeFactory cursorNodeFactory;
 
 	public LeapStageDecorator(Stage stage, CursorNodeFactory cursorNodeFactory) {
-		LeapApp.getMotionRegistry().addListener(this);
+		SkeletonApp.addListener(this);
 		this.stage = stage;
 		this.pointers = new HashMap<>();
 		this.cursorNodeFactory = cursorNodeFactory;
@@ -62,57 +62,62 @@ public class LeapStageDecorator implements PointMotionListener {
 		stage.getScene().setRoot(new StackPane(root, cursorPane));
 	}
 
-	@Override
-	public void enteredViewoport(PointEvent event) {		
-		if(pointers.containsKey(event.getSource().id())) {
-			return;
-		}
-		
-		if(pointers.isEmpty()) {
-			cursorPane.getScene().setCursor(Cursor.NONE);
-		}
-		
-		FXCursor cursor = new FXCursor();
-		cursor.setAdjustX(-8);
-		cursor.setAdjustY(-8);
-		cursor.setCursorNodeFactory(cursorNodeFactory);
-		
-		cursor.getNode().addEventHandler(ANY, new EventHandler<CursorEvent>() {
-			@Override
-			public void handle(CursorEvent event) {
-				event.getTragetNode().fireEvent(event);
-			}
-
-		});
-		
-		cursorPane.addCursor(cursor);
-		cursor.setVisible(true);
-		pointers.put(event.getSource().id(), cursor);
-	}
-
-	@Override
-	public void moved(PointEvent event) {
-		pointers.get(event.getSource().id()).move(event.getX(), event.getY());
-	}
-
-	@Override
-	public void leftViewport(PointEvent event) {
-		// FIXME: Should remove the pointer from cursorPane and not only set is invisible.
-		pointers.get(event.getSource().id()).setVisible(false);;
-		pointers.remove(event.getSource().id());
-		
-		if(pointers.size() == 0) {
-			restoreMouseOnFXCursorPosition(event.getX(), event.getY());
-		}
-	}
-	
 	public void setCursorNodeFactory(CursorNodeFactory cursorNodeFactory) {
 		this.cursorNodeFactory = cursorNodeFactory;
 	}
 	
-	private void restoreMouseOnFXCursorPosition(Float x, Float y) {
+	private void restoreMouseOnFXCursorPosition(Double x, Double y) {
 		Robot robot = Application.GetApplication().createRobot();
 		robot.mouseMove(x.intValue(), y.intValue());
 		cursorPane.getScene().setCursor(Cursor.DEFAULT);
+	}
+
+	@Override
+	public void onUpdate(SkeletonEvent event) {
+		for(Hand hand: event.getSkeleton().getHands()) {		
+			if(!hand.getPalmPosition().isPresent()) {
+				continue;
+			}			
+			Point palmPosition = hand.getPalmPosition().get();
+			
+			if(palmPosition.hasEntered()) {
+				if(pointers.containsKey(hand.getId())) {
+					return;
+				}
+				
+				if(pointers.isEmpty()) {
+					cursorPane.getScene().setCursor(Cursor.NONE);
+				}
+				
+				FXCursor cursor = new FXCursor();
+				cursor.setAdjustX(-8);
+				cursor.setAdjustY(-8);
+				cursor.setCursorNodeFactory(cursorNodeFactory);
+				
+				cursor.getNode().addEventHandler(ANY, new EventHandler<CursorEvent>() {
+					@Override
+					public void handle(CursorEvent event) {
+						event.getTragetNode().fireEvent(event);
+					}
+
+				});
+				
+				cursorPane.addCursor(cursor);
+				pointers.put(hand.getId(), cursor);
+				pointers.get(hand.getId()).move(palmPosition.getScreenPosition().getX(), palmPosition.getScreenPosition().getY());
+				cursor.setVisible(true);
+	
+			} else if(palmPosition.hasLeft()) {
+				// FIXME: Should remove the pointer from cursorPane and not only set is invisible.
+				pointers.get(hand.getId()).setVisible(false);;
+				
+				if(pointers.size() == 1) {
+					restoreMouseOnFXCursorPosition(pointers.get(hand.getId()).getNode().getTranslateX(), pointers.get(hand.getId()).getNode().getTranslateY());
+				}
+				pointers.remove(hand.getId());
+			} else {
+				pointers.get(hand.getId()).move(palmPosition.getScreenPosition().getX(), palmPosition.getScreenPosition().getY());
+			}
+		}
 	}
 }

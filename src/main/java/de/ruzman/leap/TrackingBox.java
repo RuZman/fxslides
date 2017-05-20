@@ -62,10 +62,10 @@ public class TrackingBox {
 		normalizedPoint.setZ((point.getZ()-centroidOrigin.getZ())/box.getX());
 	}
 	
-	public void calcScreenPosition(Vector point, Vector position) {
-		position.setX((float) ((point.getX()-origin.getX())*getTrackedAreaWidth() / box.getX()));
-		position.setY((float) (getTrackedAreaHeight() - ((point.getY()-origin.getY())*getTrackedAreaHeight() / box.getY())));
-		position.setZ((point.getZ()-origin.getX()));
+	public void calcScreenPosition(Vector point, Vector screenPosition) {
+		screenPosition.setX((float) ((point.getX()-origin.getX())*getTrackedAreaWidth() / box.getX()));
+		screenPosition.setY((float) (getTrackedAreaHeight() - ((point.getY()-origin.getY())*getTrackedAreaHeight() / box.getY())));
+		screenPosition.setZ((point.getZ()-origin.getX()));
 	}
 	
 	public void calcZone(Vector point, Vector zone) {
