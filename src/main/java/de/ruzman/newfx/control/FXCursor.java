@@ -13,9 +13,9 @@ import com.sun.javafx.scene.input.PickResultChooser;
 import de.ruzman.newfx.event.CursorEvent;
 
 @SuppressWarnings("restriction")
-public class FXCursor<T extends Node> {
-	CursorNodeFactory<T> cursorNodeFactory;
-	private T node;
+public class FXCursor {
+	CursorNodeFactory cursorNodeFactory;
+	private Node node;
 	private boolean isVisible = true;
 
 	protected DoubleProperty x = new SimpleDoubleProperty(0);
@@ -97,17 +97,17 @@ public class FXCursor<T extends Node> {
 		return nodeToSendEvent;
 	}
 
-	public T getNode() {
-		return (T) node;
+	public Node getNode() {
+		return node;
 	}
 
-	public void setCursorNodeFactory(CursorNodeFactory<T> cursorNodeFactory) {
+	public void setCursorNodeFactory(CursorNodeFactory cursorNodeFactory) {
 		this.cursorNodeFactory = cursorNodeFactory;
 		initNewNode();
 	}
 
 	private void initNewNode() {
-		T newNode = (T) cursorNodeFactory.createCursor();
+		Node newNode = cursorNodeFactory.createCursor();
 
 		if (newNode == null) {
 			throw new IllegalArgumentException();

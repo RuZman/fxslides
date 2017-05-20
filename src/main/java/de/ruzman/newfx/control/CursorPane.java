@@ -16,7 +16,7 @@ public class CursorPane extends Pane {
 		setPickOnBounds(true);
 	}
 
-	public void addCursor(FXCursor<?> fxCursor) {
+	public void addCursor(FXCursor fxCursor) {
 		if (fxCursor != null) {
 			getChildren().add(fxCursor.getNode());
 		}

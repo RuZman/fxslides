@@ -30,12 +30,14 @@ import javafx.stage.Stage;
 public class LeapStageDecorator implements PointMotionListener {
 	private Stage stage;
 	private CursorPane cursorPane;
-	private Map<Integer, FXCursor<?>> pointers;
+	private Map<Integer, FXCursor> pointers;
+	private CursorNodeFactory cursorNodeFactory;
 
-	public LeapStageDecorator(Stage stage) {
+	public LeapStageDecorator(Stage stage, CursorNodeFactory cursorNodeFactory) {
 		LeapApp.getMotionRegistry().addListener(this);
 		this.stage = stage;
 		this.pointers = new HashMap<>();
+		this.cursorNodeFactory = cursorNodeFactory;
 
 		stage.sceneProperty().addListener(new ChangeListener<Scene>() {
 			@Override
@@ -70,16 +72,10 @@ public class LeapStageDecorator implements PointMotionListener {
 			cursorPane.getScene().setCursor(Cursor.NONE);
 		}
 		
-		FXCursor<Circle> cursor = new FXCursor<>();
+		FXCursor cursor = new FXCursor();
 		cursor.setAdjustX(-8);
 		cursor.setAdjustY(-8);
-		cursor.setCursorNodeFactory(new CursorNodeFactory<Circle>() {
-
-			@Override
-			public Circle createCursor() {
-				return new Circle(0, 0, 18, Color.rgb(240, 240, 240));
-			}
-		});
+		cursor.setCursorNodeFactory(cursorNodeFactory);
 		
 		cursor.getNode().addEventHandler(ANY, new EventHandler<CursorEvent>() {
 			@Override
@@ -108,6 +104,10 @@ public class LeapStageDecorator implements PointMotionListener {
 		if(pointers.size() == 0) {
 			restoreMouseOnFXCursorPosition(event.getX(), event.getY());
 		}
+	}
+	
+	public void setCursorNodeFactory(CursorNodeFactory cursorNodeFactory) {
+		this.cursorNodeFactory = cursorNodeFactory;
 	}
 	
 	private void restoreMouseOnFXCursorPosition(Float x, Float y) {

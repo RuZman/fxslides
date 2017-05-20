@@ -4,13 +4,20 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import static de.ruzman.newfx.event.CursorEvent.ANY;
 
 import com.leapmotion.leap.Controller;
 
 import de.ruzman.leap.event.LeapEventHandler;
 import de.ruzman.leap.fx.LeapStageDecorator;
+import de.ruzman.newfx.control.CursorNodeFactory;
+import de.ruzman.newfx.event.CursorEvent;
 
 /**
  * LeapApp contains the configuration of a Leap Motion project. This class
@@ -28,6 +35,7 @@ public final class LeapApp {
 	private double trackedAreaHeight;
 	private boolean usePolling;
 	private boolean stopPollingOnFocusLost;
+	private LeapStageDecorator leapStageDecorator;
 
 	private Controller controller;
 
@@ -58,7 +66,16 @@ public final class LeapApp {
 			synchronizeWithLeapMotion();
 
 			if (shouldDecorateStage) {
-				new LeapStageDecorator(stage);
+				CursorNodeFactory cursorNodeFactory = new CursorNodeFactory() {
+
+					@Override
+					public Circle createCursor() {
+						return new Circle(0, 0, 18, Color.rgb(240, 240, 240));
+					}
+				};
+
+				
+				leapStageDecorator = new LeapStageDecorator(stage, cursorNodeFactory);
 			}
 		}
 
@@ -138,6 +155,10 @@ public final class LeapApp {
 
 	public static Controller getController() {
 		return instance.controller;
+	}
+	
+	public static void setCursorNodeFactory(CursorNodeFactory cursorNodeFactory) {
+		instance.leapStageDecorator.setCursorNodeFactory(cursorNodeFactory);
 	}
 
 	public static void update() {
