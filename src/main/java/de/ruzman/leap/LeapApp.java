@@ -44,7 +44,7 @@ public final class LeapApp {
 	}
 
 	private void init(TrackingBox trackingBox, int minimumHandNumber, int maximumHandNumber, boolean usePolling,
-			boolean stopPollingOnFocusLost, MotionRegistry motionRegistry, Stage stage, boolean shouldDecorateStage) {
+			boolean stopPollingOnFocusLost, MotionRegistry motionRegistry, Stage stage, CursorNodeFactory cursorNodeFactory, boolean shouldDecorateStage) {
 
 		// FIXME: Beim doppelten Aufruf ist das nicht mehr korrekt.
 		this.motionRegistry = motionRegistry;
@@ -65,16 +65,7 @@ public final class LeapApp {
 			});
 			synchronizeWithLeapMotion();
 
-			if (shouldDecorateStage) {
-				CursorNodeFactory cursorNodeFactory = new CursorNodeFactory() {
-
-					@Override
-					public Circle createCursor() {
-						return new Circle(0, 0, 18, Color.rgb(240, 240, 240));
-					}
-				};
-
-				
+			if (shouldDecorateStage) {				
 				leapStageDecorator = new LeapStageDecorator(stage, cursorNodeFactory);
 			}
 		}
@@ -223,6 +214,14 @@ public final class LeapApp {
 		private MotionRegistry motionRegistry;
 		private Stage stage;
 		private boolean shouldDecorateStage = true;
+		private CursorNodeFactory cursorNodeFactory = new CursorNodeFactory() {
+
+			@Override
+			public Circle createCursor() {
+				return new Circle(0, 0, 18, Color.rgb(240, 240, 240));
+			}
+		};
+
 
 		/**
 		 * See: {@link LeapAppBuilder#LeapAppBuilder(boolean)
@@ -273,7 +272,7 @@ public final class LeapApp {
 		 */
 		public LeapApp initLeapApp() {
 			instance.init(trackingBox, minimumHandNumber, maximumHandNumber, usePolling, stopPollingOnFocusLost,
-					motionRegistry, stage, shouldDecorateStage);
+					motionRegistry, stage, cursorNodeFactory, shouldDecorateStage);
 
 			return instance;
 		}
@@ -337,6 +336,11 @@ public final class LeapApp {
 
 		public LeapAppBuilder decorateStage(boolean shouldDecorateStage) {
 			this.shouldDecorateStage = shouldDecorateStage;
+			return this;
+		}
+		
+		public LeapAppBuilder cursorNodeFactory(CursorNodeFactory cursorNodeFactory) {
+			this.cursorNodeFactory = cursorNodeFactory;
 			return this;
 		}
 
