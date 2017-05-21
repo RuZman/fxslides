@@ -11,4 +11,5 @@
 <?import de.ruzman.fxslides.presentation.*?>
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml" id="slide1" styleClass="slide1-background">
+	<Label text="Hallo?" />
 </AnchorPane>

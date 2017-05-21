@@ -122,4 +122,8 @@ public class LeapStageDecorator implements SkeletonListener {
 			}
 		}
 	}
+
+	@Override
+	public void onGesture(SkeletonEvent event) {
+	}
 }

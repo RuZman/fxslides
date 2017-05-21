@@ -11,12 +11,11 @@ import de.ruzman.hui.skeleton.Hand.HandBuilder;
 import de.ruzman.hui.util.IdGenerator;
 
 public class Skeleton extends SkeletonPart {
-	private Set<Integer> handIds = new HashSet<>();
-
 	public enum Type {
 		SKELETON, HAND, FINGER
 	}
-
+	
+	private Set<Integer> handIds = new HashSet<>();
 	private List<Hand> hands;
 
 	private Skeleton(SkeletonBuilder skeletonBuilder) {
@@ -66,5 +65,4 @@ public class Skeleton extends SkeletonPart {
 			return new Skeleton(this);
 		}
 	}
-
 }

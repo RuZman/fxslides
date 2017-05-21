@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import de.ruzman.hui.device.LeapMotionDataProvider;
 import de.ruzman.hui.event.SkeletonListener;
+import de.ruzman.hui.gesture.GestureProvider;
 import de.ruzman.leap.LeapApp.LeapAppBuilder;
 import de.ruzman.leap.event.LeapEventHandler;
 import javafx.animation.KeyFrame;
@@ -28,6 +29,10 @@ public final class SkeletonApp {
 
 	public static void addListener(SkeletonListener listener) {
 		skeletonRegistry.addListener(listener);
+	}
+	
+	public static void addGestureProvider(GestureProvider gestureProvider) {
+		skeletonRegistry.addGestureProvider(gestureProvider);
 	}
 
 	private void usePolling() {

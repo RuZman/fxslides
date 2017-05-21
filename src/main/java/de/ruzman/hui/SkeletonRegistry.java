@@ -1,17 +1,22 @@
 package de.ruzman.hui;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import de.ruzman.hui.device.DataProvider;
 import de.ruzman.hui.event.SkeletonEvent;
 import de.ruzman.hui.event.SkeletonListener;
+import de.ruzman.hui.gesture.GestureProvider;
 import de.ruzman.hui.skeleton.Skeleton;
 import de.ruzman.hui.skeleton.World;
 
 public class SkeletonRegistry {
 	private List<SkeletonListener> skeletonListeners = new ArrayList<>();
 	private List<DataProvider> dataProviders = new ArrayList<>();
+	private List<GestureProvider> gestureProviders = new ArrayList<>();
 	private World lastWorld = new World();
 
 	public SkeletonRegistry() {
@@ -19,6 +24,10 @@ public class SkeletonRegistry {
 
 	public void addListener(SkeletonListener skeletonListener) {
 		skeletonListeners.add(skeletonListener);
+	}
+
+	public void addGestureProvider(GestureProvider gestureProvider) {
+		gestureProviders.add(gestureProvider);
 	}
 	
 	public void addDataProvider(DataProvider dataProvider) {
@@ -35,11 +44,19 @@ public class SkeletonRegistry {
 		
 		lastWorld.addMissingSkeletonParts(newWorld);
 		newWorld.create();
+		
 		for(Skeleton skeleton: newWorld.getSkeletons()) {
-			SkeletonEvent event = new SkeletonEvent(skeleton);
+			List<String> gestures = new ArrayList<>();
+			for(GestureProvider gestureProvider: gestureProviders) {
+				gestures.addAll(gestureProvider.provideGesture(skeleton));
+			}
+			
+			SkeletonEvent event = new SkeletonEvent(skeleton, gestures);
 			skeletonListeners.forEach(e -> e.onUpdate(event));
+			skeletonListeners.stream()
+				.filter(e -> !gestures.isEmpty())
+				.forEach(listener -> listener.onGesture(event));
 		}
-
 		lastWorld = newWorld;
 	}
 }
