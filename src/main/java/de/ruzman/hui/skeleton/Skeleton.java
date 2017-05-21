@@ -44,11 +44,11 @@ public class Skeleton extends SkeletonPart {
 		private List<HandBuilder> handBuilders = new ArrayList<>();
 
 		public SkeletonBuilder() {
-			this(Optional.empty());
+			this(Optional.empty(), null);
 		}
 
-		public SkeletonBuilder(Optional<Integer> id) {
-			super(id.isPresent() ? id.get() : IdGenerator.generateId(), Type.SKELETON);
+		public SkeletonBuilder(Optional<Integer> id, Skeleton anchestor) {
+			super(id.isPresent() ? id.get() : IdGenerator.generateId(), Type.SKELETON, anchestor);
 		}
 
 		public SkeletonBuilder addHand(Hand.HandBuilder handBuilder) {
@@ -62,7 +62,10 @@ public class Skeleton extends SkeletonPart {
 
 		@Override
 		public Skeleton create() {
-			return new Skeleton(this);
+			if(initializedObject == null) {
+				return initializedObject = new Skeleton(this);
+			}
+			throw new RuntimeException();
 		}
 	}
 }

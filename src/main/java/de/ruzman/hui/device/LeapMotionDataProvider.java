@@ -36,9 +36,9 @@ public class LeapMotionDataProvider implements LeapListener, DataProvider {
 		for (com.leapmotion.leap.Hand hand : frame.hands()) {
 			Point palmPosition = new Point(source, null, hand.stabilizedPalmPosition());
 
-			HandBuilder handBuilder = new HandBuilder(hand.id());
+			HandBuilder lastHandBuilder = lastWorld.getHandBuilder(hand.id()).orElse(null);
+			HandBuilder handBuilder = new HandBuilder(hand.id(), lastHandBuilder);
 			handBuilder.palmPosition(palmPosition);
-			handBuilder.hasEntered(lastWorld);
 
 			SkeletonBuilder skeletonBuilder = findOrCreateSkeleton(newWorld, lastWorld, handBuilder);
 			skeletonBuilder.addHand(handBuilder);
@@ -49,8 +49,8 @@ public class LeapMotionDataProvider implements LeapListener, DataProvider {
 	@Override
 	public void addFingers(World newWorld, World lastWorld) {
 		for (com.leapmotion.leap.Finger finger : frame.fingers()) {
-			FingerBuilder fingerBuilder = new  FingerBuilder(finger.id());
-			fingerBuilder.hasEntered(lastWorld);
+			FingerBuilder lastFingerBuilder = lastWorld.getFingerBuilder(finger.id()).orElse(null);
+			FingerBuilder fingerBuilder = new  FingerBuilder(finger.id(), lastFingerBuilder);
 			
 			HandBuilder handBuilder = newWorld.getHandBuilder(finger.hand().id()).get();
 			handBuilder.addFinger(fingerBuilder);
@@ -69,10 +69,10 @@ public class LeapMotionDataProvider implements LeapListener, DataProvider {
 		Optional<SkeletonBuilder> skeletonBuilder = newWorld.containsSkeletonPart(partBuilder);
 
 		if (!lastSkeletonBuilder.isPresent()) {
-			skeletonBuilder = Optional.of(new SkeletonBuilder().hasEntered(true));
+			skeletonBuilder = Optional.of(new SkeletonBuilder());
 			newWorld.addSkeletonPart(skeletonBuilder.get(), skeletonBuilder.get());
 		} else {
-			skeletonBuilder = Optional.of(new SkeletonBuilder(Optional.of(lastSkeletonBuilder.get().getId())));
+			skeletonBuilder = Optional.of(new SkeletonBuilder(Optional.of(lastSkeletonBuilder.get().getId()), lastSkeletonBuilder.get().getInitializedObject()));
 			newWorld.addSkeletonPart(skeletonBuilder.get(), skeletonBuilder.get());
 		}
 

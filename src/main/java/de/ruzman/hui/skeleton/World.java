@@ -36,11 +36,15 @@ public class World {
 	}
 
 	public Optional<SkeletonBuilder> containsSkeletonPart(SkeletonPart part) {
-		return Optional.ofNullable(skeletonParts.get(part.getIdentificator()));
+		return containsSkeletonPart(part.getIdentificator());
 	}
 	
 	public Optional<SkeletonBuilder> containsSkeletonPart(SkeletonPartBuilder<?, ?> part) {
-		return Optional.ofNullable(skeletonParts.get(part.getIdentificator()));
+		return containsSkeletonPart(part.getIdentificator());
+	}
+	
+	public Optional<SkeletonBuilder> containsSkeletonPart(String identifier) {
+		return Optional.ofNullable(skeletonParts.get(identifier));
 	}
 
 	public List<Skeleton> getSkeletons() {
@@ -61,21 +65,21 @@ public class World {
 			Optional<SkeletonBuilder> newSkeletonBuilder = newWorld.containsSkeletonPart(skeleton);
 
 			if (!newSkeletonBuilder.isPresent() && !skeleton.hasLeft()) {
-				newSkeletonBuilder = Optional.of(new SkeletonBuilder().hasLeft(true));
+				newSkeletonBuilder = Optional.of(new SkeletonBuilder(Optional.of(skeleton.getId()), skeleton).hasLeft(true));
 				newWorld.skeletonBuilders.add(newSkeletonBuilder.get());
 			}
 			
 			for(Hand hand: skeleton.getHands()) {
 				HandBuilder handBuilder = null;
 				if(!newWorld.getHandBuilder(hand.getId()).isPresent() && !hand.hasLeft()) {
-					handBuilder = new HandBuilder(hand.getId()).hasLeft(true);
+					handBuilder = new HandBuilder(hand.getId(), hand).hasLeft(true);
 					newSkeletonBuilder.get().getHandBuilders().add(handBuilder);
 				}
 				
 				for(Finger finger: hand.getFingers()) {
 					
 					if(!newWorld.getFingerBuilder(finger.getId()).isPresent() && !finger.hasLeft()) {
-						handBuilder.addFinger(new FingerBuilder(finger.getId()).hasLeft(true));
+						handBuilder.addFinger(new FingerBuilder(finger.getId(), finger).hasLeft(true));
 					}
 					
 					

@@ -31,8 +31,12 @@ public class Hand extends SkeletonPart {
 		private Point palmPosition = null;
 		private List<FingerBuilder> fingerBuilders = new ArrayList<>();
 
-		public HandBuilder(int id) {
-			super(id, Type.HAND);
+		public HandBuilder(int id, HandBuilder lastHandBuilder) {
+			this(id, lastHandBuilder != null ? lastHandBuilder.getInitializedObject() : null);
+		}
+		
+		public HandBuilder(int id, Hand hand) {
+			super(id, Type.HAND, hand);
 		}
 		
 		public HandBuilder palmPosition(Point palmPosition) {
@@ -46,7 +50,10 @@ public class Hand extends SkeletonPart {
 		
 		@Override
 		public Hand create() {
-			return new Hand(this);
+			if(initializedObject == null) {
+				return initializedObject = new Hand(this);
+			}
+			throw new RuntimeException();
 		}
 	}
 }

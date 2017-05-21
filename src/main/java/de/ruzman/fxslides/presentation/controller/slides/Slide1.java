@@ -21,6 +21,10 @@ public class Slide1 implements SkeletonListener {
 			@Override
 			public List<String> provideGesture(Skeleton skeleton) {
 				List<String> gestures = new ArrayList<>();
+				
+				if(skeleton == null) {
+					return gestures;
+				}
 
 				if (!skeleton.getHands().isEmpty() && skeleton.getHands().get(0).getPalmPosition().isPresent()) {
 					if (skeleton.getHands().get(0).getPalmPosition().get().getScreenPosition().getX() < 1000) {
@@ -41,12 +45,13 @@ public class Slide1 implements SkeletonListener {
 			System.out.println("enter");
 		} else if (event.getSkeleton().getHands().get(0).getFingers().get(0).hasLeft()) {
 			System.out.println("left");
+		} else {
+			System.out.println("m");
 		}
 	}
 
 	@Override
 	public void onGesture(SkeletonEvent event) {
-		System.out.println("pppy");
 		if (event.getGestures().contains("<1000")) {
 			System.out.println("ooo");
 		} else if (event.getGestures().contains(">=1000")) {

@@ -1,10 +1,7 @@
 package de.ruzman.hui;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import de.ruzman.hui.device.DataProvider;
 import de.ruzman.hui.event.SkeletonEvent;

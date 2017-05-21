@@ -9,12 +9,19 @@ public class Finger extends SkeletonPart {
 	}
 
 	public static class FingerBuilder extends SkeletonPartBuilder<FingerBuilder, Finger> {
-		public FingerBuilder(int id) {
-			super(id, Type.FINGER);
+		public FingerBuilder(int id, FingerBuilder lastFingerBuilder) {
+			this(id, lastFingerBuilder != null ? lastFingerBuilder.getInitializedObject() : null);
+		}
+		
+		public FingerBuilder(int id, Finger anchestor) {
+			super(id, Type.FINGER, anchestor);
 		}
 
 		public Finger create() {
-			return new Finger(this);
+			if(initializedObject == null) {
+				return initializedObject = new Finger(this);
+			}
+			throw new RuntimeException();
 		}
 	}
 }
