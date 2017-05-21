@@ -11,6 +11,7 @@ import de.ruzman.hui.skeleton.Point;
 import de.ruzman.hui.skeleton.Skeleton.SkeletonBuilder;
 import de.ruzman.hui.skeleton.SkeletonPart.SkeletonPartBuilder;
 import de.ruzman.hui.skeleton.World;
+import de.ruzman.hui.skeleton.Finger.FingerBuilder;
 import de.ruzman.leap.LeapApp;
 import de.ruzman.leap.event.LeapEvent;
 import de.ruzman.leap.event.LeapEventHandler;
@@ -52,7 +53,12 @@ public class LeapMotionDataProvider implements LeapListener, DataProvider {
 	@Override
 	public void addFingers(World newWorld, World lastWorld) {
 		for (com.leapmotion.leap.Finger finger : frame.fingers()) {
+			FingerBuilder fingerBuilder = new  FingerBuilder(finger.id());
+			
 			HandBuilder handBuilder = newWorld.getHandBuilder(finger.hand().id()).get();
+			handBuilder.addFinger(fingerBuilder);
+			
+			newWorld.addSkeletonPart(newWorld.containsSkeletonPart(handBuilder).get(), fingerBuilder);
 		}
 	}
 

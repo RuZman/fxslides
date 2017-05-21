@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import de.ruzman.hui.skeleton.Finger.FingerBuilder;
 import de.ruzman.hui.skeleton.Hand.HandBuilder;
 import de.ruzman.hui.skeleton.Skeleton.SkeletonBuilder;
 import de.ruzman.hui.skeleton.Skeleton.Type;
@@ -65,9 +66,19 @@ public class World {
 			}
 			
 			for(Hand hand: skeleton.getHands()) {
-				
+				HandBuilder handBuilder = null;
 				if(!newWorld.getHandBuilder(hand.getId()).isPresent() && !hand.hasLeft()) {
-					newSkeletonBuilder.get().getHandBuilders().add(new HandBuilder(hand.getId()).hasLeft(true));
+					handBuilder = new HandBuilder(hand.getId()).hasLeft(true);
+					newSkeletonBuilder.get().getHandBuilders().add(handBuilder);
+				}
+				
+				for(Finger finger: hand.getFingers()) {
+					
+					if(!newWorld.getFingerBuilder(finger.getId()).isPresent() && !finger.hasLeft()) {
+						handBuilder.addFinger(new FingerBuilder(finger.getId()).hasLeft(true));
+					}
+					
+					
 				}
 			}
 		}
@@ -75,5 +86,9 @@ public class World {
 	
 	public Optional<HandBuilder> getHandBuilder(int id) {
 		return Optional.ofNullable((HandBuilder) ids.get("" + Type.HAND.name() + id));
+	}
+	
+	public Optional<FingerBuilder> getFingerBuilder(int id) {
+		return Optional.ofNullable((FingerBuilder) ids.get("" + Type.FINGER.name() + id));
 	}
 }

@@ -30,6 +30,7 @@ public class SkeletonRegistry {
 		
 		for(DataProvider dataProvider: dataProviders) {
 			dataProvider.addHands(newWorld, lastWorld);
+			dataProvider.addFingers(newWorld, lastWorld);
 		}
 		
 		lastWorld.addMissingSkeletonParts(newWorld);
