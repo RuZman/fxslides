@@ -16,8 +16,14 @@ public class Slide1 implements SkeletonListener {
 	@Override
 	public void onUpdate(SkeletonEvent event) {
 		
-		if(event.getSkeleton().getHands().get(0).getFingers().get(0).hasLeft()) {
-			System.out.println(event.getSkeleton().getId() + " - " + event.getSkeleton().getHands().size() + " - " + event.getSkeleton().getHands().get(0).getFingers().size());
+		if(event.getSkeleton().getHands().get(0).getFingers().get(0).hasEntered()) {
+			System.out.println("enter");
+		} else if(event.getSkeleton().getHands().get(0).getFingers().get(0).hasLeft()) {
+			System.out.println("left");
+		} else {
+			System.out.println("m");
 		}
+		
+		// event.getSkeleton().getId() + " - " + event.getSkeleton().getHands().size() + " - " + event.getSkeleton().getHands().get(0).getFingers().size()
 	}
 }

@@ -65,6 +65,12 @@ public abstract class SkeletonPart {
 		}
 		
 		@SuppressWarnings("unchecked")
+		public E hasEntered(boolean hasEntered) {
+			this.hasEntered = hasEntered;
+			return (E) this;
+		}
+		
+		@SuppressWarnings("unchecked")
 		public E hasLeft(boolean hasLeft) {
 			this.hasLeft = hasLeft;
 			return (E) this;

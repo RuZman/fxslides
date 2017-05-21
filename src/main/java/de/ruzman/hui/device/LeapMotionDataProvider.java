@@ -26,6 +26,12 @@ public class LeapMotionDataProvider implements LeapListener, DataProvider {
 		source = new Point(null, LeapApp.getTrackingBox(), new Vector());
 	}
 
+	@Override
+	public void onFrame(Controller controller) {
+		frame = controller.frame();
+	}
+
+	@Override
 	public void addHands(World newWorld, World lastWorld) {
 		for (com.leapmotion.leap.Hand hand : frame.hands()) {
 			Point palmPosition = new Point(source, null, hand.stabilizedPalmPosition());
@@ -39,21 +45,12 @@ public class LeapMotionDataProvider implements LeapListener, DataProvider {
 			newWorld.addSkeletonPart(skeletonBuilder, handBuilder);
 		}
 	}
-
-	@Override
-	public void onFrame(Controller controller) {
-		frame = controller.frame();
-	}
-
-	@Override
-	public void statusChanged(LeapEvent event) {
-
-	}
-
+	
 	@Override
 	public void addFingers(World newWorld, World lastWorld) {
 		for (com.leapmotion.leap.Finger finger : frame.fingers()) {
 			FingerBuilder fingerBuilder = new  FingerBuilder(finger.id());
+			fingerBuilder.hasEntered(lastWorld);
 			
 			HandBuilder handBuilder = newWorld.getHandBuilder(finger.hand().id()).get();
 			handBuilder.addFinger(fingerBuilder);
@@ -61,13 +58,18 @@ public class LeapMotionDataProvider implements LeapListener, DataProvider {
 			newWorld.addSkeletonPart(newWorld.containsSkeletonPart(handBuilder).get(), fingerBuilder);
 		}
 	}
+	
+	@Override
+	public void statusChanged(LeapEvent event) {
+
+	}
 
 	private SkeletonBuilder findOrCreateSkeleton(World newWorld, World lastWorld, SkeletonPartBuilder<?, ?> partBuilder) {
 		Optional<SkeletonBuilder> lastSkeletonBuilder = lastWorld.containsSkeletonPart(partBuilder);
 		Optional<SkeletonBuilder> skeletonBuilder = newWorld.containsSkeletonPart(partBuilder);
 
 		if (!lastSkeletonBuilder.isPresent()) {
-			skeletonBuilder = Optional.of(new SkeletonBuilder());
+			skeletonBuilder = Optional.of(new SkeletonBuilder().hasEntered(true));
 			newWorld.addSkeletonPart(skeletonBuilder.get(), skeletonBuilder.get());
 		} else {
 			skeletonBuilder = Optional.of(new SkeletonBuilder(Optional.of(lastSkeletonBuilder.get().getId())));
