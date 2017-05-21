@@ -9,7 +9,7 @@ import com.leapmotion.leap.Vector;
 import de.ruzman.hui.skeleton.Hand.HandBuilder;
 import de.ruzman.hui.skeleton.Point;
 import de.ruzman.hui.skeleton.Skeleton.SkeletonBuilder;
-import de.ruzman.hui.skeleton.Skeleton.Type;
+import de.ruzman.hui.skeleton.SkeletonPart.SkeletonPartBuilder;
 import de.ruzman.hui.skeleton.World;
 import de.ruzman.leap.LeapApp;
 import de.ruzman.leap.event.LeapEvent;
@@ -27,15 +27,15 @@ public class LeapMotionDataProvider implements LeapListener, DataProvider {
 
 	public void addHands(World newWorld, World lastWorld) {
 		for (com.leapmotion.leap.Hand hand : frame.hands()) {
-			SkeletonBuilder skeletonBuilder = findOrCreateSkeleton(newWorld, lastWorld, Type.HAND, hand.id());
 			Point palmPosition = new Point(source, null, hand.stabilizedPalmPosition());
 
 			HandBuilder handBuilder = new HandBuilder(hand.id());
 			handBuilder.palmPosition(palmPosition);
 			handBuilder.hasEntered(lastWorld);
 
+			SkeletonBuilder skeletonBuilder = findOrCreateSkeleton(newWorld, lastWorld, handBuilder);
 			skeletonBuilder.addHand(handBuilder);
-			newWorld.addSkeletonPart(skeletonBuilder, handBuilder, Type.HAND, hand.id());
+			newWorld.addSkeletonPart(skeletonBuilder, handBuilder);
 		}
 	}
 
@@ -56,18 +56,16 @@ public class LeapMotionDataProvider implements LeapListener, DataProvider {
 		}
 	}
 
-	private SkeletonBuilder findOrCreateSkeleton(World newWorld, World lastWorld, Type type, int id) {
-		Optional<SkeletonBuilder> lastSkeletonBuilder = lastWorld.containsSkeletonPart(type, id);
-		Optional<SkeletonBuilder> skeletonBuilder = newWorld.containsSkeletonPart(type, id);
+	private SkeletonBuilder findOrCreateSkeleton(World newWorld, World lastWorld, SkeletonPartBuilder<?, ?> partBuilder) {
+		Optional<SkeletonBuilder> lastSkeletonBuilder = lastWorld.containsSkeletonPart(partBuilder);
+		Optional<SkeletonBuilder> skeletonBuilder = newWorld.containsSkeletonPart(partBuilder);
 
 		if (!lastSkeletonBuilder.isPresent()) {
 			skeletonBuilder = Optional.of(new SkeletonBuilder());
-			newWorld.addSkeletonPart(skeletonBuilder.get(), skeletonBuilder.get(), Type.SKELETON,
-					skeletonBuilder.get().getId());
+			newWorld.addSkeletonPart(skeletonBuilder.get(), skeletonBuilder.get());
 		} else {
 			skeletonBuilder = Optional.of(new SkeletonBuilder(Optional.of(lastSkeletonBuilder.get().getId())));
-			newWorld.addSkeletonPart(skeletonBuilder.get(), skeletonBuilder.get(), Type.SKELETON,
-					skeletonBuilder.get().getId());
+			newWorld.addSkeletonPart(skeletonBuilder.get(), skeletonBuilder.get());
 		}
 
 		return skeletonBuilder.get();

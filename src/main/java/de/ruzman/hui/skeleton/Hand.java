@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import de.ruzman.hui.skeleton.Finger.FingerBuilder;
+import de.ruzman.hui.skeleton.Skeleton.Type;
 
 public class Hand extends SkeletonPart {
 	private Optional<Point> palmPosition;
@@ -31,7 +32,7 @@ public class Hand extends SkeletonPart {
 		private List<FingerBuilder> fingerBuilders = new ArrayList<>();
 
 		public HandBuilder(int id) {
-			super(id);
+			super(id, Type.HAND);
 		}
 		
 		public HandBuilder palmPosition(Point palmPosition) {

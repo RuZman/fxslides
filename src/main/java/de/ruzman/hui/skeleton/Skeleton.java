@@ -14,7 +14,7 @@ public class Skeleton extends SkeletonPart {
 	private Set<Integer> handIds = new HashSet<>();
 
 	public enum Type {
-		SKELETON, HAND
+		SKELETON, HAND, FINGER
 	}
 
 	private List<Hand> hands;
@@ -25,7 +25,7 @@ public class Skeleton extends SkeletonPart {
 		hands = skeletonBuilder.handBuilders.stream().map(handBuilder -> handBuilder.create())
 				.collect(Collectors.toList());
 	}
-	
+
 	public List<Hand> getHands() {
 		return hands;
 	}
@@ -41,17 +41,17 @@ public class Skeleton extends SkeletonPart {
 		}
 	}
 
-	public static class SkeletonBuilder extends SkeletonPartBuilder<SkeletonBuilder, Skeleton>{
+	public static class SkeletonBuilder extends SkeletonPartBuilder<SkeletonBuilder, Skeleton> {
 		private List<HandBuilder> handBuilders = new ArrayList<>();
 
 		public SkeletonBuilder() {
 			this(Optional.empty());
 		}
-		
+
 		public SkeletonBuilder(Optional<Integer> id) {
-			super(id.isPresent() ? id.get() : IdGenerator.generateId());
+			super(id.isPresent() ? id.get() : IdGenerator.generateId(), Type.SKELETON);
 		}
-		
+
 		public SkeletonBuilder addHand(Hand.HandBuilder handBuilder) {
 			handBuilders.add(handBuilder);
 			return this;
@@ -60,7 +60,7 @@ public class Skeleton extends SkeletonPart {
 		public List<HandBuilder> getHandBuilders() {
 			return handBuilders;
 		}
-		
+
 		@Override
 		public Skeleton create() {
 			return new Skeleton(this);

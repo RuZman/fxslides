@@ -1,5 +1,7 @@
 package de.ruzman.hui.skeleton;
 
+import de.ruzman.hui.skeleton.Skeleton.Type;
+
 public class Finger extends SkeletonPart {
 
 	private Finger(FingerBuilder fingerBuilder) {
@@ -8,7 +10,7 @@ public class Finger extends SkeletonPart {
 
 	public static class FingerBuilder extends SkeletonPartBuilder<FingerBuilder, Finger> {
 		public FingerBuilder(int id) {
-			super(id);
+			super(id, Type.FINGER);
 		}
 
 		public Finger create() {

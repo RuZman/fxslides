@@ -13,28 +13,33 @@ import java.util.stream.Collectors;
 import de.ruzman.hui.skeleton.Hand.HandBuilder;
 import de.ruzman.hui.skeleton.Skeleton.SkeletonBuilder;
 import de.ruzman.hui.skeleton.Skeleton.Type;
+import de.ruzman.hui.skeleton.SkeletonPart.SkeletonPartBuilder;
 
 public class World {
 	Map<String, SkeletonBuilder> skeletonParts = new HashMap<>();
-	Map<String, Object> ids = new HashMap<>();
+	Map<String, SkeletonPartBuilder<?, ?>> ids = new HashMap<>();
 	List<SkeletonBuilder> skeletonBuilders = new ArrayList<>();
 	List<Skeleton> skeletons = Collections.emptyList();
 
 	Set<Integer> handIds = new HashSet<>();
 
-	public void addSkeletonPart(SkeletonBuilder skeletonBuilder, Object part, Type type, Integer id) {
-		ids.put(type.name() + id.toString(), part);
-		skeletonParts.put(type.name() + id.toString(), skeletonBuilder);
+	public void addSkeletonPart(SkeletonBuilder skeletonBuilder, SkeletonPartBuilder<?, ?> part) {
+		ids.put(part.getIdentificator(), part);
+		skeletonParts.put(part.getIdentificator(), skeletonBuilder);
 
 		if (part instanceof HandBuilder) {
-			handIds.add(id);
+			handIds.add(part.getId());
 		} else if (part instanceof SkeletonBuilder) {
 			skeletonBuilders.add(skeletonBuilder);
 		}
 	}
 
-	public Optional<SkeletonBuilder> containsSkeletonPart(Type type, Object id) {
-		return Optional.ofNullable(skeletonParts.get(type.name() + id.toString()));
+	public Optional<SkeletonBuilder> containsSkeletonPart(SkeletonPart part) {
+		return Optional.ofNullable(skeletonParts.get(part.getIdentificator()));
+	}
+	
+	public Optional<SkeletonBuilder> containsSkeletonPart(SkeletonPartBuilder<?, ?> part) {
+		return Optional.ofNullable(skeletonParts.get(part.getIdentificator()));
 	}
 
 	public List<Skeleton> getSkeletons() {
@@ -52,7 +57,7 @@ public class World {
 
 	public void addMissingSkeletonParts(World newWorld) {
 		for (Skeleton skeleton : skeletons) {
-			Optional<SkeletonBuilder> newSkeletonBuilder = newWorld.containsSkeletonPart(Type.SKELETON, skeleton.getId());
+			Optional<SkeletonBuilder> newSkeletonBuilder = newWorld.containsSkeletonPart(skeleton);
 
 			if (!newSkeletonBuilder.isPresent() && !skeleton.hasLeft()) {
 				newSkeletonBuilder = Optional.of(new SkeletonBuilder().hasLeft(true));
