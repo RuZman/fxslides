@@ -42,7 +42,7 @@ public class World {
 	}
 
 	public void create() {
-		skeletons = skeletonBuilders.stream().map(skeletonBuilder -> skeletonBuilder.createSkeleton())
+		skeletons = skeletonBuilders.stream().map(skeletonBuilder -> skeletonBuilder.create())
 				.collect(Collectors.toList());
 	}
 
@@ -60,13 +60,15 @@ public class World {
 			}
 			
 			for(Hand hand: skeleton.getHands()) {
-				Optional<HandBuilder> handBuilder = Optional.ofNullable((HandBuilder) newWorld.ids.get("" + Type.HAND.name() + hand.getId()));
-
 				
-				if(!handBuilder.isPresent() && !hand.hasLeft()) {
+				if(!newWorld.getHandBuilder(hand.getId()).isPresent() && !hand.hasLeft()) {
 					newSkeletonBuilder.get().getHandBuilders().add(new HandBuilder(hand.getId()).hasLeft(true));
 				}
 			}
 		}
+	}
+	
+	public Optional<HandBuilder> getHandBuilder(int id) {
+		return Optional.ofNullable((HandBuilder) ids.get("" + Type.HAND.name() + id));
 	}
 }

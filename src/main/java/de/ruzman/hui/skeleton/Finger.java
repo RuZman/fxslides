@@ -1,13 +1,18 @@
 package de.ruzman.hui.skeleton;
 
-import java.util.Optional;
+public class Finger extends SkeletonPart {
 
-public class Finger {
-	private int id;
-	private Optional<Point> tipPosition;
-	
-	public Finger(int id, Point tipPosition) {
-		this.id = id;
-		this.tipPosition = Optional.ofNullable(tipPosition);
+	private Finger(FingerBuilder fingerBuilder) {
+		super(fingerBuilder);
+	}
+
+	public static class FingerBuilder extends SkeletonPartBuilder<FingerBuilder, Finger> {
+		public FingerBuilder(int id) {
+			super(id);
+		}
+
+		public Finger create() {
+			return new Finger(this);
+		}
 	}
 }

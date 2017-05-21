@@ -18,36 +18,27 @@ import de.ruzman.leap.event.LeapListener;
 
 public class LeapMotionDataProvider implements LeapListener, DataProvider {
 	private Frame frame;
-	
+	private Point source;
+
 	public LeapMotionDataProvider() {
 		LeapEventHandler.addLeapListener(this);
+		source = new Point(null, LeapApp.getTrackingBox(), new Vector());
 	}
-	
+
 	public void addHands(World newWorld, World lastWorld) {
-		Point source = new Point(null, LeapApp.getTrackingBox(), new Vector());
 		for (com.leapmotion.leap.Hand hand : frame.hands()) {
-			Optional<SkeletonBuilder> lastSkeletonBuilder = lastWorld.containsSkeletonPart(Type.HAND, hand.id());			
-			Optional<SkeletonBuilder> skeletonBuilder = newWorld.containsSkeletonPart(Type.HAND, hand.id());
-			
-			if(!lastSkeletonBuilder.isPresent()) {
-				skeletonBuilder = Optional.of(new SkeletonBuilder());
-				newWorld.addSkeletonPart(skeletonBuilder.get(), skeletonBuilder.get(), Type.SKELETON, skeletonBuilder.get().getId());
-			} else {
-				skeletonBuilder = Optional.of(new SkeletonBuilder(Optional.of(lastSkeletonBuilder.get().getId())));
-				newWorld.addSkeletonPart(skeletonBuilder.get(), skeletonBuilder.get(), Type.SKELETON, skeletonBuilder.get().getId());
-			}
-			
+			SkeletonBuilder skeletonBuilder = findOrCreateSkeleton(newWorld, lastWorld, Type.HAND, hand.id());
 			Point palmPosition = new Point(source, null, hand.stabilizedPalmPosition());
-			
+
 			HandBuilder handBuilder = new HandBuilder(hand.id());
 			handBuilder.palmPosition(palmPosition);
 			handBuilder.hasEntered(lastWorld);
-			
-			skeletonBuilder.get().addHand(handBuilder);
-			newWorld.addSkeletonPart(skeletonBuilder.get(), handBuilder, Type.HAND, hand.id());
+
+			skeletonBuilder.addHand(handBuilder);
+			newWorld.addSkeletonPart(skeletonBuilder, handBuilder, Type.HAND, hand.id());
 		}
 	}
-	
+
 	@Override
 	public void onFrame(Controller controller) {
 		frame = controller.frame();
@@ -56,5 +47,29 @@ public class LeapMotionDataProvider implements LeapListener, DataProvider {
 	@Override
 	public void statusChanged(LeapEvent event) {
 
+	}
+
+	@Override
+	public void addFingers(World newWorld, World lastWorld) {
+		for (com.leapmotion.leap.Finger finger : frame.fingers()) {
+			HandBuilder handBuilder = newWorld.getHandBuilder(finger.hand().id()).get();
+		}
+	}
+
+	private SkeletonBuilder findOrCreateSkeleton(World newWorld, World lastWorld, Type type, int id) {
+		Optional<SkeletonBuilder> lastSkeletonBuilder = lastWorld.containsSkeletonPart(type, id);
+		Optional<SkeletonBuilder> skeletonBuilder = newWorld.containsSkeletonPart(type, id);
+
+		if (!lastSkeletonBuilder.isPresent()) {
+			skeletonBuilder = Optional.of(new SkeletonBuilder());
+			newWorld.addSkeletonPart(skeletonBuilder.get(), skeletonBuilder.get(), Type.SKELETON,
+					skeletonBuilder.get().getId());
+		} else {
+			skeletonBuilder = Optional.of(new SkeletonBuilder(Optional.of(lastSkeletonBuilder.get().getId())));
+			newWorld.addSkeletonPart(skeletonBuilder.get(), skeletonBuilder.get(), Type.SKELETON,
+					skeletonBuilder.get().getId());
+		}
+
+		return skeletonBuilder.get();
 	}
 }

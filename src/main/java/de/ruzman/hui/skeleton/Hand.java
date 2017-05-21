@@ -1,46 +1,37 @@
 package de.ruzman.hui.skeleton;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import de.ruzman.hui.skeleton.Skeleton.Type;
+import de.ruzman.hui.skeleton.Finger.FingerBuilder;
 
-public class Hand {
-	private int id;
+public class Hand extends SkeletonPart {
 	private Optional<Point> palmPosition;
-	private boolean hasEntered;
-	private boolean hasLeft;
+	private List<Finger> fingers;
 	
 	private Hand(HandBuilder handBuilder) {
-		this.id = handBuilder.id;
+		super(handBuilder);
 		this.palmPosition = Optional.ofNullable(handBuilder.palmPosition);
-		this.hasEntered = handBuilder.hasEntered;
-		this.hasLeft = handBuilder.hasLeft;
+		fingers = handBuilder.fingerBuilders.stream().map(fingerBuilder -> fingerBuilder.create())
+				.collect(Collectors.toList());
 	}
 	
 	public Optional<Point> getPalmPosition() {
 		return palmPosition;
 	}
 	
-	public int getId() {
-		return id;
-	}
-	
-	public boolean hasEntered() {
-		return hasEntered;
+	public List<Finger> getFingers() {
+		return fingers;
 	}
 
-	public boolean hasLeft() {
-		return hasLeft;
-	}
-
-	public static class HandBuilder {
-		private int id;
+	public static class HandBuilder extends SkeletonPartBuilder<HandBuilder, Hand> {
 		private Point palmPosition = null;
-		private boolean hasEntered = false;
-		private boolean hasLeft = false;
-		
+		private List<FingerBuilder> fingerBuilders = new ArrayList<>();
+
 		public HandBuilder(int id) {
-			this.id = id;
+			super(id);
 		}
 		
 		public HandBuilder palmPosition(Point palmPosition) {
@@ -48,18 +39,13 @@ public class Hand {
 			return this;
 		}
 		
-		public HandBuilder hasEntered(World lastWorld) {
-			hasEntered = lastWorld == null || !lastWorld.containsSkeletonPart(Type.HAND, id).isPresent();
-			return this;
+		public void addFinger(FingerBuilder fingerBuilder) {
+			fingerBuilders.add(fingerBuilder);
 		}
 		
-		public Hand createHand() {
+		@Override
+		public Hand create() {
 			return new Hand(this);
-		}
-
-		public HandBuilder hasLeft(boolean hasLeft) {
-			this.hasLeft = hasLeft;
-			return this;
 		}
 	}
 }
