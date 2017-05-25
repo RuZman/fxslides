@@ -21,6 +21,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>edu.ufl.digitalworlds</groupId>
+			<artifactId>j4k</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<dependency>
 			<groupId>io.datafx</groupId>
 			<artifactId>flow</artifactId>
 			<version>8.0b9</version>
@@ -51,7 +57,7 @@
 
 	<repositories>
 		<repository>
-			<id>local-leap-motion-repo</id>
+			<id>local-repo</id>
 			<url>file://${basedir}/lib/</url>
 		</repository>
 	</repositories>

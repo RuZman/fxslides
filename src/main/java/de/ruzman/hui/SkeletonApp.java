@@ -2,6 +2,7 @@ package de.ruzman.hui;
 
 import java.util.Optional;
 
+import de.ruzman.hui.device.KinectDataProvider;
 import de.ruzman.hui.device.LeapMotionDataProvider;
 import de.ruzman.hui.event.SkeletonListener;
 import de.ruzman.hui.gesture.GestureProvider;
@@ -22,6 +23,7 @@ public final class SkeletonApp {
 			leapAppBuilder.get().initLeapApp();
 			isLeapMotionActive = true;
 			skeletonRegistry.addDataProvider(new LeapMotionDataProvider());
+			skeletonRegistry.addDataProvider(new KinectDataProvider());
 		}
 
 		usePolling();

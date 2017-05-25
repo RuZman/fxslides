@@ -34,7 +34,8 @@ public class SkeletonRegistry {
 	public void update() {
 		World newWorld = new World();
 		
-		for(DataProvider dataProvider: dataProviders) {
+		for(DataProvider dataProvider: dataProviders) {			
+			dataProvider.addSkeleton(newWorld, lastWorld);
 			dataProvider.addHands(newWorld, lastWorld);
 			dataProvider.addFingers(newWorld, lastWorld);
 		}

@@ -32,6 +32,10 @@ public class LeapMotionDataProvider implements LeapListener, DataProvider {
 	}
 
 	@Override
+	public void addSkeleton(World newWorld, World lastWorld) {
+	}
+
+	@Override
 	public void addHands(World newWorld, World lastWorld) {
 		for (com.leapmotion.leap.Hand hand : frame.hands()) {
 			Point palmPosition = new Point(source, null, hand.stabilizedPalmPosition());
@@ -45,26 +49,27 @@ public class LeapMotionDataProvider implements LeapListener, DataProvider {
 			newWorld.addSkeletonPart(skeletonBuilder, handBuilder);
 		}
 	}
-	
+
 	@Override
 	public void addFingers(World newWorld, World lastWorld) {
 		for (com.leapmotion.leap.Finger finger : frame.fingers()) {
 			FingerBuilder lastFingerBuilder = lastWorld.getFingerBuilder(finger.id()).orElse(null);
-			FingerBuilder fingerBuilder = new  FingerBuilder(finger.id(), lastFingerBuilder);
-			
+			FingerBuilder fingerBuilder = new FingerBuilder(finger.id(), lastFingerBuilder);
+
 			HandBuilder handBuilder = newWorld.getHandBuilder(finger.hand().id()).get();
 			handBuilder.addFinger(fingerBuilder);
-			
+
 			newWorld.addSkeletonPart(newWorld.containsSkeletonPart(handBuilder).get(), fingerBuilder);
 		}
 	}
-	
+
 	@Override
 	public void statusChanged(LeapEvent event) {
 
 	}
 
-	private SkeletonBuilder findOrCreateSkeleton(World newWorld, World lastWorld, SkeletonPartBuilder<?, ?> partBuilder) {
+	private SkeletonBuilder findOrCreateSkeleton(World newWorld, World lastWorld,
+			SkeletonPartBuilder<?, ?> partBuilder) {
 		Optional<SkeletonBuilder> lastSkeletonBuilder = lastWorld.containsSkeletonPart(partBuilder);
 		Optional<SkeletonBuilder> skeletonBuilder = newWorld.containsSkeletonPart(partBuilder);
 
@@ -72,7 +77,8 @@ public class LeapMotionDataProvider implements LeapListener, DataProvider {
 			skeletonBuilder = Optional.of(new SkeletonBuilder());
 			newWorld.addSkeletonPart(skeletonBuilder.get(), skeletonBuilder.get());
 		} else {
-			skeletonBuilder = Optional.of(new SkeletonBuilder(Optional.of(lastSkeletonBuilder.get().getId()), lastSkeletonBuilder.get().getInitializedObject()));
+			skeletonBuilder = Optional.of(new SkeletonBuilder(Optional.of(lastSkeletonBuilder.get().getId()),
+					lastSkeletonBuilder.get().getInitializedObject()));
 			newWorld.addSkeletonPart(skeletonBuilder.get(), skeletonBuilder.get());
 		}
 
