@@ -1,4 +1,4 @@
-package de.ruzman.leap;
+package de.ruzman.common;
 
 import static de.ruzman.leap.LeapApp.getTrackedAreaHeight;
 import static de.ruzman.leap.LeapApp.getTrackedAreaWidth;
@@ -6,6 +6,9 @@ import static de.ruzman.leap.LeapApp.getTrackedAreaWidth;
 import com.leapmotion.leap.InteractionBox;
 import com.leapmotion.leap.Vector;
 
+import de.ruzman.leap.LeapApp;
+
+// FIXME: Remove reference to Leap Motion
 public class TrackingBox {
 	private static final Vector DEFAULT_BOX;
 	private static final Vector DEFAULT_ORIGIN;

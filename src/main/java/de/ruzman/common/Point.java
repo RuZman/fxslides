@@ -1,10 +1,8 @@
-package de.ruzman.hui.skeleton;
+package de.ruzman.common;
 
 import java.util.Optional;
 
 import com.leapmotion.leap.Vector;
-
-import de.ruzman.leap.TrackingBox;
 
 public class Point {
 	public Optional<Point> source;
@@ -19,11 +17,11 @@ public class Point {
 		this.trackingBox = Optional.ofNullable(trackingBox);
 	}
 	
-	public Vector getAbsolutepPosition() {
+	public Vector getAbsolutePosition() {
 		if(!source.isPresent()) {
 			return absolutePosition;
 		}
-		return absolutePosition.plus(source.get().getAbsolutepPosition());
+		return absolutePosition.plus(source.get().getAbsolutePosition());
 	}
 	
 	public Vector getScreenPosition() {

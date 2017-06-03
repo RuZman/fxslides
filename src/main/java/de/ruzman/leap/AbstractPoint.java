@@ -10,6 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import com.leapmotion.leap.Frame;
 import com.leapmotion.leap.Vector;
 
+import de.ruzman.common.TrackingBox;
 import de.ruzman.leap.event.IListener;
 import de.ruzman.leap.event.PointDraggListener;
 import de.ruzman.leap.event.PointEvent;

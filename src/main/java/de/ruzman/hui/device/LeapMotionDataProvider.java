@@ -7,9 +7,9 @@ import com.leapmotion.leap.Frame;
 import com.leapmotion.leap.Vector;
 
 import de.ruzman.hui.skeleton.Hand.HandBuilder;
-import de.ruzman.hui.skeleton.Point;
 import de.ruzman.hui.skeleton.Skeleton.SkeletonBuilder;
 import de.ruzman.hui.skeleton.SkeletonPart.SkeletonPartBuilder;
+import de.ruzman.common.Point;
 import de.ruzman.hui.skeleton.World;
 import de.ruzman.hui.skeleton.Finger.FingerBuilder;
 import de.ruzman.leap.LeapApp;

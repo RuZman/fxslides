@@ -2,8 +2,10 @@ package de.ruzman.leap;
 
 import com.leapmotion.leap.Controller;
 
+import de.ruzman.common.TrackingBox;
 import de.ruzman.leap.event.LeapEventHandler;
 import de.ruzman.leap.fx.LeapStageDecorator;
+import de.ruzman.newfx.control.CursorNode;
 import de.ruzman.newfx.control.CursorNodeFactory;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -122,8 +124,8 @@ public final class LeapApp {
 		return instance.controller;
 	}
 	
-	public static void setCursorNodeFactory(CursorNodeFactory cursorNodeFactory) {
-		instance.leapStageDecorator.setCursorNodeFactory(cursorNodeFactory);
+	public static LeapStageDecorator leapStageDecorator() {
+		return instance.leapStageDecorator;
 	}
 	
 	public static void destroy() {

@@ -2,57 +2,49 @@ package de.ruzman.newfx.control;
 
 import java.util.Objects;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.scene.Node;
-import javafx.scene.text.Text;
-
 import com.sun.javafx.geom.PickRay;
 import com.sun.javafx.scene.input.PickResultChooser;
 
+import de.ruzman.newfx.control.CursorNode.CusorNodeConfiguration;
+import de.ruzman.newfx.control.CursorPane.CursorPaneConfiguration;
+import de.ruzman.newfx.control.CursorPane.FXCursors;
 import de.ruzman.newfx.event.CursorEvent;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.Node;
+import javafx.scene.text.Text;
 
 @SuppressWarnings("restriction")
 public class FXCursor {
-	CursorNodeFactory cursorNodeFactory;
-	private Node node;
-	private boolean isVisible = true;
+	private ObjectProperty<CusorNodeConfiguration<?>> cursorNodeConfiguration = new SimpleObjectProperty<>();
+	private ObjectProperty<Node> node = new SimpleObjectProperty<>();
+	
+	private DoubleProperty x = new SimpleDoubleProperty(0);
+	private DoubleProperty y = new SimpleDoubleProperty(0);
 
-	protected DoubleProperty x = new SimpleDoubleProperty(0);
-	protected DoubleProperty y = new SimpleDoubleProperty(0);
+	private Node nodeToSendEvent;
 
-	protected DoubleProperty adjustX = new SimpleDoubleProperty(0);
-	protected DoubleProperty adjustY = new SimpleDoubleProperty(0);
-
-	protected Node nodeToSendEvent;
-
-	public void setAdjustX(double value) {
-		adjustX.set(value);
+	private FXCursor() {
+		super();
 	}
 
-	public void setAdjustY(double value) {
-		adjustY.set(value);
+	private final void move() {
+		setNodePosition();
+		fireEvent();
 	}
 
-	public final void move(double x, double y) {
-		if (isVisible) {
-			this.x.set(x);
-			this.y.set(y);
-
-			calcPosition();
-
-			fireEvent(x, y);
-		}
+	private void setNodePosition() {
+		node.get().setTranslateX(x.get() + cursorNodeConfiguration.get().getInstance().adjustXProperty().get());
+		node.get().setTranslateY(y.get() + cursorNodeConfiguration.get().getInstance().adjustYProperty().get());
 	}
 
-	protected void calcPosition() {
-		if (node != null) {
-			node.setTranslateX(x.get() + adjustX.get());
-			node.setTranslateY(y.get() + adjustY.get());
-		}
-	}
-
-	private void fireEvent(double x, double y) {
+	private void fireEvent() {
+		double x = this.x.get();
+		double y = this.y.get();
+		
 		Node nodeToSendEvent = getNodeToSendEvent(x, y);
 
 		if (this.nodeToSendEvent == null && nodeToSendEvent == null) {
@@ -61,69 +53,107 @@ public class FXCursor {
 			// nodeToSendEvent.fireEvent(new
 			// CursorEvent(CursorEvent.CURSOR_MOVED, x, y));
 		} else if (this.nodeToSendEvent != null && nodeToSendEvent != null) {
-			node.fireEvent(new CursorEvent(CursorEvent.CURSOR_LEFT, this.nodeToSendEvent, x, y));
-			node.fireEvent(new CursorEvent(CursorEvent.CURSOR_ENTERED, nodeToSendEvent, x, y));
+			node.get().fireEvent(new CursorEvent(CursorEvent.CURSOR_LEFT, this.nodeToSendEvent, x, y));
+			node.get().fireEvent(new CursorEvent(CursorEvent.CURSOR_ENTERED, nodeToSendEvent, x, y));
 		} else if (this.nodeToSendEvent == null) {
-			// nodeToSendEvent.fireEvent(new
-			// CursorEvent(CursorEvent.CURSOR_ENTERED, x, y));
-			node.fireEvent(new CursorEvent(CursorEvent.CURSOR_ENTERED, nodeToSendEvent, x, y));
+			node.get().fireEvent(new CursorEvent(CursorEvent.CURSOR_ENTERED, nodeToSendEvent, x, y));
 		} else {
-			// FIXME: What is this case?
+			// TODO: Is this Case possible?
 		}
 
 		this.nodeToSendEvent = nodeToSendEvent;
 	}
 
-	protected Node getNodeToSendEvent(double x, double y) {
+	private Node getNodeToSendEvent(double x, double y) {
 		Node nodeToSendEvent = null;
 
-		if (isVisible && node != null) {
-			final PickResultChooser result = new PickResultChooser();
-			PickRay rayPick = new PickRay(x, y, 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
-			node.getScene().getRoot().impl_pickNode(rayPick, result);
-			nodeToSendEvent = result.getIntersectedNode();
+		final PickResultChooser result = new PickResultChooser();
+		PickRay rayPick = new PickRay(x, y, 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+		node.get().getScene().getRoot().impl_pickNode(rayPick, result);
+		nodeToSendEvent = result.getIntersectedNode();
 
-			if (nodeToSendEvent != null && !nodeToSendEvent.equals(nodeToSendEvent.getScene().getRoot())
-					&& (nodeToSendEvent.isMouseTransparent() || nodeToSendEvent instanceof Text)) {
-				Node controlNotToSendEvent = nodeToSendEvent.getParent();
-				while (controlNotToSendEvent != null
-						&& (controlNotToSendEvent.isMouseTransparent() || controlNotToSendEvent instanceof Text)) {
-					controlNotToSendEvent = controlNotToSendEvent.getParent();
-				}
-				nodeToSendEvent = controlNotToSendEvent;
+		if (nodeToSendEvent != null && !nodeToSendEvent.equals(nodeToSendEvent.getScene().getRoot())
+				&& (nodeToSendEvent.isMouseTransparent() || nodeToSendEvent instanceof Text)) {
+			Node controlNotToSendEvent = nodeToSendEvent.getParent();
+			while (controlNotToSendEvent != null
+					&& (controlNotToSendEvent.isMouseTransparent() || controlNotToSendEvent instanceof Text)) {
+				controlNotToSendEvent = controlNotToSendEvent.getParent();
 			}
+			nodeToSendEvent = controlNotToSendEvent;
 		}
 
 		return nodeToSendEvent;
 	}
-
-	public Node getNode() {
+	
+	public ReadOnlyObjectProperty<Node> nodeProperty() {
 		return node;
 	}
-
-	public void setCursorNodeFactory(CursorNodeFactory cursorNodeFactory) {
-		this.cursorNodeFactory = cursorNodeFactory;
-		initNewNode();
-	}
-
-	private void initNewNode() {
-		Node newNode = cursorNodeFactory.createCursor();
-
-		if (newNode == null) {
-			throw new IllegalArgumentException();
+	
+	public static class FXCursorConfiguration {
+		private FXCursors parent;
+		private FXCursor fxCursor;
+		private boolean isMoving;
+		private boolean shouldCreateNewNode;
+		private double x;
+		private double y;
+		private CusorNodeConfiguration<CursorPaneConfiguration> defaultCursorNode;
+		private CusorNodeConfiguration<FXCursorConfiguration> cursorNode;
+		
+		public FXCursorConfiguration(FXCursors parent, CusorNodeConfiguration<CursorPaneConfiguration> defaultCursorNode) {
+			this.defaultCursorNode = Objects.requireNonNull(defaultCursorNode);
+			this.parent = Objects.requireNonNull(parent);
+			shouldCreateNewNode = true;
 		}
-
-		node = newNode;
-	}
-
-	public void setVisible(boolean isVisible) {
-		this.isVisible = isVisible;
-
-		if (node != null) {
-			node.setVisible(isVisible);
-			if (!isVisible) {
-				nodeToSendEvent = null;
+		
+		public FXCursorConfiguration move(double x, double y) {
+			this.x = x;
+			this.y = y;
+			this.isMoving = true;
+			return this;
+		}
+		
+		public CusorNodeConfiguration<FXCursorConfiguration> overwriteCursorNode() {
+			if(cursorNode == null) {
+				cursorNode = new CusorNodeConfiguration<FXCursorConfiguration>(this);
 			}
+
+			shouldCreateNewNode = true; // TODO: Erstellt unnötig eine neue Node, wenn diese Property nicht gespeichert wird.
+			return cursorNode;
+		}
+		
+		public FXCursors save() {
+			if(fxCursor == null) {
+				isMoving = false;
+				fxCursor = new FXCursor();
+			}
+			
+			fxCursor.x.set(x);
+			fxCursor.y.set(y);
+			
+			if(cursorNode == null) {
+				fxCursor.cursorNodeConfiguration.set(defaultCursorNode);
+			} else {
+				fxCursor.cursorNodeConfiguration.set(cursorNode);
+			}
+			
+			if(shouldCreateNewNode) {
+				if(fxCursor.node.get() != null) {
+					((CursorPane) fxCursor.node.get().getParent()).getChildren().remove(fxCursor.node.get());
+				}
+				fxCursor.node.set(fxCursor.cursorNodeConfiguration.get().getInstance().cursorNodeFactoryProperty().get().createCursor());
+				shouldCreateNewNode = false;
+			}
+			
+			if(isMoving) {
+				fxCursor.move();
+				isMoving = false;
+			}
+			
+			return parent;
+		}
+		
+		public FXCursor instance() {
+			return fxCursor;
 		}
 	}
 }

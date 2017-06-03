@@ -5,10 +5,10 @@ import static javafx.scene.input.KeyCombination.NO_MATCH;
 
 import java.util.ResourceBundle;
 
+import de.ruzman.common.TrackingBox;
 import de.ruzman.fxslides.presentation.controller.slides.Slide1;
 import de.ruzman.hui.SkeletonApp;
 import de.ruzman.leap.LeapApp;
-import de.ruzman.leap.TrackingBox;
 import io.datafx.controller.ViewConfiguration;
 import io.datafx.controller.flow.FlowException;
 import javafx.application.Application;

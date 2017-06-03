@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import de.ruzman.common.Point;
 import de.ruzman.hui.skeleton.Finger.FingerBuilder;
 import de.ruzman.hui.skeleton.Skeleton.Type;
 
