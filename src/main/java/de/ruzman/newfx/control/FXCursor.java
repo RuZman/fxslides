@@ -96,10 +96,10 @@ public class FXCursor {
 		private boolean shouldCreateNewNode;
 		private double x;
 		private double y;
-		private CusorNodeConfiguration<CursorPaneConfiguration> defaultCursorNode;
+		private CusorNodeConfiguration<?> defaultCursorNode;
 		private CusorNodeConfiguration<FXCursorConfiguration> cursorNode;
 		
-		public FXCursorConfiguration(FXCursors parent, CusorNodeConfiguration<CursorPaneConfiguration> defaultCursorNode) {
+		public FXCursorConfiguration(FXCursors parent, CusorNodeConfiguration<?> defaultCursorNode) {
 			this.defaultCursorNode = Objects.requireNonNull(defaultCursorNode);
 			this.parent = Objects.requireNonNull(parent);
 			shouldCreateNewNode = true;

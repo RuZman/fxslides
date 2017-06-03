@@ -16,6 +16,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 
 @FXMLController("../../fxml/slides/slide1.fxml")
 public class Slide1 implements SkeletonListener {
@@ -69,13 +70,13 @@ public class Slide1 implements SkeletonListener {
 
 			@Override
 			public Node createCursor() {
-				return new Circle(20.0, Color.RED);
+				return new Rectangle(20.0, 50.0, Color.RED);
 			}
 		};
 
 		if (event.getGestures().contains("<1000")) {
 			if (isRight) {
-				LeapApp.leapStageDecorator().getCursorPaneConfiguration()
+				LeapApp.leapStageDecorator().cursorPaneConfigurationProperty().get()
 						.fxCursor("HAND " + event.getSkeleton().getHands().get(0).getId()).overwriteCursorNode()
 						.adjust(10, 10).cursorNodeFactory(cursorNodeFactory).save()
 						.move(event.getSkeleton().getHands().get(0).getPalmPosition().get().getScreenPosition()
@@ -87,9 +88,9 @@ public class Slide1 implements SkeletonListener {
 			}
 		} else if (event.getGestures().contains(">=1000")) {
 			if (!isRight) {
-				LeapApp.leapStageDecorator().getCursorPaneConfiguration()
+				LeapApp.leapStageDecorator().cursorPaneConfigurationProperty().get()
 						.fxCursor("HAND " + event.getSkeleton().getHands().get(0).getId()).overwriteCursorNode()
-						.adjust(10, 10).cursorNodeFactory(cursorNodeFactory2).save()
+						.adjust(10, 25).cursorNodeFactory(cursorNodeFactory2).save()
 						.move(event.getSkeleton().getHands().get(0).getPalmPosition().get().getScreenPosition()
 								.getX(),
 								event.getSkeleton().getHands().get(0).getPalmPosition().get().getScreenPosition()

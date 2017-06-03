@@ -3,12 +3,13 @@ package de.ruzman.leap;
 import com.leapmotion.leap.Controller;
 
 import de.ruzman.common.TrackingBox;
+import de.ruzman.hui.fx.StageDecorator;
+import de.ruzman.hui.fx.StageDecorator.StageDecoratorConfiguration;
 import de.ruzman.leap.event.LeapEventHandler;
-import de.ruzman.leap.fx.LeapStageDecorator;
-import de.ruzman.newfx.control.CursorNode;
 import de.ruzman.newfx.control.CursorNodeFactory;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
@@ -27,7 +28,7 @@ public final class LeapApp {
 	private int maximumHandNumber = Integer.MAX_VALUE;
 	private double trackedAreaWidth;
 	private double trackedAreaHeight;
-	private LeapStageDecorator leapStageDecorator;
+	private StageDecorator leapStageDecorator;
 
 	private Controller controller;
 
@@ -36,7 +37,8 @@ public final class LeapApp {
 	}
 
 	private void init(TrackingBox trackingBox, int minimumHandNumber, int maximumHandNumber, boolean usePolling,
-			boolean stopPollingOnFocusLost, MotionRegistry motionRegistry, Stage stage, CursorNodeFactory cursorNodeFactory, boolean shouldDecorateStage) {
+			boolean stopPollingOnFocusLost, MotionRegistry motionRegistry, Stage stage,
+			CursorNodeFactory cursorNodeFactory, boolean shouldDecorateStage) {
 
 		// FIXME: Beim doppelten Aufruf ist das nicht mehr korrekt.
 		this.motionRegistry = motionRegistry;
@@ -56,8 +58,26 @@ public final class LeapApp {
 				}
 			});
 
-			if (shouldDecorateStage) {				
-				leapStageDecorator = new LeapStageDecorator(stage, cursorNodeFactory);
+			if (shouldDecorateStage) {
+				CursorNodeFactory cursorNodeFactory2 = new CursorNodeFactory() {
+					
+					@Override
+					public Node createCursor() {
+						return new Circle(16, Color.WHITE);
+					}
+				};
+				
+				// @formatter:off
+				leapStageDecorator = new StageDecoratorConfiguration()
+					.cursorPaneConfiguration()
+						.stage(stage)
+						.defaultCursorNode()
+							.adjust(-8, -8)
+							.cursorNodeFactory(cursorNodeFactory2)
+						.save()
+					.save()
+				.save().instance();
+				// @formatter:on
 			}
 		}
 
@@ -65,6 +85,10 @@ public final class LeapApp {
 
 		setMinimumHandNumber(minimumHandNumber);
 		setMaximumHandNumber(maximumHandNumber);
+	}
+	
+	public static StageDecorator stageDecorator() {
+		return instance.leapStageDecorator;
 	}
 
 	public static TrackingBox getTrackingBox() {
@@ -75,7 +99,6 @@ public final class LeapApp {
 		validateHandNumber();
 		instance.minimumHandNumber = minimumHandNumber;
 	}
-	
 
 	public static void setTrackingBox(TrackingBox trackingBox2) {
 		instance.trackingBox = trackingBox2;
@@ -123,11 +146,11 @@ public final class LeapApp {
 	public static Controller getController() {
 		return instance.controller;
 	}
-	
-	public static LeapStageDecorator leapStageDecorator() {
+
+	public static StageDecorator leapStageDecorator() {
 		return instance.leapStageDecorator;
 	}
-	
+
 	public static void destroy() {
 		LeapEventHandler.removeAllLeapListener();
 		instance.controller.delete();
@@ -187,7 +210,6 @@ public final class LeapApp {
 				return new Circle(0, 0, 18, Color.rgb(240, 240, 240));
 			}
 		};
-
 
 		/**
 		 * See: {@link LeapAppBuilder#LeapAppBuilder(boolean)
@@ -304,7 +326,7 @@ public final class LeapApp {
 			this.shouldDecorateStage = shouldDecorateStage;
 			return this;
 		}
-		
+
 		public LeapAppBuilder cursorNodeFactory(CursorNodeFactory cursorNodeFactory) {
 			this.cursorNodeFactory = cursorNodeFactory;
 			return this;
