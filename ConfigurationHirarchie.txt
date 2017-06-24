@@ -1,0 +1,87 @@
+SkeletonApp
+	dataProviders
+		add[DataProvider]
+		remove[DataProvider|dataProviderId]
+		get[dataProviderId]
+		list
+
+
+
+
+StageDecoratorConfiguration
+	cursorPaneConfiguration -> CursorPaneConfiguration
+
+CursorPaneConfiguration
+	stage(stage)
+	fxCursors -> FXCursorsConfiguration
+	fxCursor -> FXCursorConfiguration
+	defaultCursorNode -> CursorNodeConfiguration
+
+FXCursorsConfiguration
+	createOrUpdate(id) -> FXCursorConfiguration
+	get(id) -> FXCursorConfiguration
+	remove(id)
+	
+FXCursorConfiguration(defaultCursorNode)
+	move(x, y)
+	overwriteCursorNode -> CursorNodeConfiguration
+
+CursorNodeConfiguration
+	adjust(x, y)
+	cursorNodeFactory(cursorNodeFactory)
+
+
+
+// Hand tracken lassen von CursorPane
+	.decorateStage()
+		.cursorPane()
+			.defaultCursorNode()
+				.node(Node)
+				.adjust(4, 8)
+				.save()
+			.fxCursors()
+				.createCursor(pointId)
+					.move(90, 90)
+				.save()
+			.save();
+
+
+
+
+
+
+// Initialisierung von einem FXCursor (holt sich die Node aus cursorPane)
+skeletonApp.dataProviders().get("LEAP")
+	.toClass(LeapMotionDataProvider.class)
+	.decorateStage()
+		.cursorPane()
+			.defaultCursorNode()
+				.node(Node)
+				.adjust(4, 8)
+				.save()
+			.fxCursors()
+				.createCursor(pointId)
+					.move(90, 90)
+				.save()
+			.save();
+
+// FXCursor bewegen
+skeletonApp.dataProviders().get("LEAP")
+	.toClass(LeapMotionDataProvider.class)
+	.decorateStage()
+		.cursorPane()
+			.fxCursor(160)
+				.move(60,30)
+			.save();
+
+// Für eine HAnd einen bestimmtes Layout setzen:
+skeletonApp.dataProviders().get("LEAP")
+	.toClass(LeapMotionDataProvider.class)
+	.decorateStage()
+		.cursorPane()
+			.fxCursor(160)
+				.overwriteCursorNode()
+					.node(Node)
+					.adjust(4, 8)
+				.save()
+			.save();

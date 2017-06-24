@@ -33,6 +33,10 @@ public final class SkeletonApp {
 		skeletonRegistry.addListener(listener);
 	}
 	
+	public static void removeListener(SkeletonListener listener) {
+		skeletonRegistry.removeListener(listener);
+	}
+	
 	public static void addGestureProvider(GestureProvider gestureProvider) {
 		skeletonRegistry.addGestureProvider(gestureProvider);
 	}

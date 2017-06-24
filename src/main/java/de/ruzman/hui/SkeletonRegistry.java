@@ -23,6 +23,10 @@ public class SkeletonRegistry {
 		skeletonListeners.add(skeletonListener);
 	}
 
+	public void removeListener(SkeletonListener listener) {
+		skeletonListeners.remove(listener);
+	}
+
 	public void addGestureProvider(GestureProvider gestureProvider) {
 		gestureProviders.add(gestureProvider);
 	}

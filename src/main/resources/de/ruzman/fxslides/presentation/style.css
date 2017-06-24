@@ -2,3 +2,40 @@
 	-fx-background-image: url("images/169/minority-report.jpg");
 	-fx-background-size: cover;
 }
+
+.slide0-bottom-background {
+	-fx-background-color: rgb(224, 224, 224);
+}
+
+.msg-red-fill {
+	-fx-fill: rgb(132, 20, 57);
+}
+
+.msg-presentation-title {
+	-fx-font-family: "Arial";
+	-fx-font-size: 48pt;
+}
+
+.msg-presentation-subtitle {
+	-fx-text-fill: rgb(132, 20, 57);
+	-fx-font-family: "Arial";
+	-fx-font-size: 30pt;
+}
+
+.msg-footer-pagenumber {
+	-fx-text-fill: rgb(132, 20, 57);
+	-fx-font-family: "Arial";
+	-fx-font-weight: bold;
+	-fx-font-size: 16pt;
+}
+
+.msg-footer-copyright {
+	-fx-font-family: "Arial";
+	-fx-font-size: 13pt;
+}
+
+.red-line-on-top {
+	-fx-border-color: rgb(132, 20, 57);
+	-fx-border-width: 1 0 0 0;
+	-fx-border-style: solid;
+}

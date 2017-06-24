@@ -9,7 +9,6 @@ import de.ruzman.hui.event.SkeletonListener;
 import de.ruzman.hui.gesture.GestureProvider;
 import de.ruzman.hui.skeleton.Skeleton;
 import de.ruzman.leap.LeapApp;
-import de.ruzman.newfx.control.CursorNode;
 import de.ruzman.newfx.control.CursorNodeFactory;
 import io.datafx.controller.FXMLController;
 import javafx.fxml.FXML;
@@ -22,7 +21,7 @@ import javafx.scene.shape.Rectangle;
 public class Slide1 implements SkeletonListener {
 	@FXML
 	public void initialize() {
-		SkeletonApp.addListener(this);
+		//SkeletonApp.addListener(this);
 		SkeletonApp.addGestureProvider(new GestureProvider() {
 
 			@Override

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"  fx:id="slide">
+	<GridPane>
+	    <columnConstraints>
+	        <ColumnConstraints percentWidth="100" />        
+	    </columnConstraints>
+	    <rowConstraints>
+	        <RowConstraints percentHeight="50"/> 
+	        <RowConstraints percentHeight="50"/>  
+	    </rowConstraints> 
+	
+		<StackPane GridPane.columnIndex="0" GridPane.rowIndex="0" />
+		<StackPane GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="slide0-bottom-background" />
+	</GridPane>
+	<Circle fx:id="msgCircle" styleClass="msg-red-fill" />
+	<VBox fx:id="title" spacing="15">
+		<Label text="Gestensteuerung" styleClass="msg-presentation-title" />
+		<Label text="In der Zukunft zeigen wir's" styleClass="msg-presentation-subtitle" />
+	</VBox>
+</StackPane>
