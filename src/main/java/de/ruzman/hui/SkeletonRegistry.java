@@ -2,6 +2,7 @@ package de.ruzman.hui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import de.ruzman.hui.device.DataProvider;
 import de.ruzman.hui.event.SkeletonEvent;
@@ -11,9 +12,9 @@ import de.ruzman.hui.skeleton.Skeleton;
 import de.ruzman.hui.skeleton.World;
 
 public class SkeletonRegistry {
-	private List<SkeletonListener> skeletonListeners = new ArrayList<>();
-	private List<DataProvider> dataProviders = new ArrayList<>();
-	private List<GestureProvider> gestureProviders = new ArrayList<>();
+	private List<SkeletonListener> skeletonListeners = new CopyOnWriteArrayList<>();
+	private List<DataProvider> dataProviders = new CopyOnWriteArrayList<>();
+	private List<GestureProvider> gestureProviders = new CopyOnWriteArrayList<>();
 	private World lastWorld = new World();
 
 	public SkeletonRegistry() {
