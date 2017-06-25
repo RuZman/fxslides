@@ -79,7 +79,7 @@ public class World {
 				for(Finger finger: hand.getFingers()) {
 					
 					if(!newWorld.getFingerBuilder(finger.getId()).isPresent() && !finger.hasLeft()) {
-						handBuilder.addFinger(new FingerBuilder(finger.getId(), finger).hasLeft(true));
+						handBuilder.addFinger(new FingerBuilder(finger.getId(), finger.getFingerType(), finger).hasLeft(true));
 					}
 					
 					

@@ -2,9 +2,9 @@ package de.ruzman.hui;
 
 import java.util.Optional;
 
+import de.ruzman.fxslides.presentation.SimplePalmDragAndDropGestureProvider;
 import de.ruzman.hui.device.KinectDataProvider;
 import de.ruzman.hui.device.LeapMotionDataProvider;
-import de.ruzman.hui.event.SkeletonListener;
 import de.ruzman.hui.gesture.GestureProvider;
 import de.ruzman.leap.LeapApp.LeapAppBuilder;
 import de.ruzman.leap.event.LeapEventHandler;
@@ -29,16 +29,20 @@ public final class SkeletonApp {
 		usePolling();
 	}
 
-	public static void addListener(SkeletonListener listener) {
+	public static void addListener(Object listener) {
 		skeletonRegistry.addListener(listener);
 	}
 	
-	public static void removeListener(SkeletonListener listener) {
+	public static void removeListener(Object listener) {
 		skeletonRegistry.removeListener(listener);
 	}
 	
 	public static void addGestureProvider(GestureProvider gestureProvider) {
 		skeletonRegistry.addGestureProvider(gestureProvider);
+	}
+
+	public static void removeGestureProvider(GestureProvider gestureProvider) {
+		skeletonRegistry.removeGestureProvider(gestureProvider);
 	}
 
 	private void usePolling() {

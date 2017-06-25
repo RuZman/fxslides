@@ -3,6 +3,7 @@ package de.ruzman.hui.device;
 import java.util.Optional;
 
 import com.leapmotion.leap.Controller;
+import com.leapmotion.leap.Finger;
 import com.leapmotion.leap.Frame;
 import com.leapmotion.leap.Vector;
 
@@ -12,6 +13,7 @@ import de.ruzman.hui.skeleton.SkeletonPart.SkeletonPartBuilder;
 import de.ruzman.common.Point;
 import de.ruzman.hui.skeleton.World;
 import de.ruzman.hui.skeleton.Finger.FingerBuilder;
+import de.ruzman.hui.skeleton.FingerType;
 import de.ruzman.leap.LeapApp;
 import de.ruzman.leap.event.LeapEvent;
 import de.ruzman.leap.event.LeapEventHandler;
@@ -39,7 +41,6 @@ public class LeapMotionDataProvider implements LeapListener, DataProvider {
 	public void addHands(World newWorld, World lastWorld) {
 		for (com.leapmotion.leap.Hand hand : frame.hands()) {
 			Point palmPosition = new Point(source, null, hand.stabilizedPalmPosition());
-
 			HandBuilder lastHandBuilder = lastWorld.getHandBuilder(hand.id()).orElse(null);
 			HandBuilder handBuilder = new HandBuilder(hand.id(), lastHandBuilder);
 			handBuilder.palmPosition(palmPosition);
@@ -54,7 +55,16 @@ public class LeapMotionDataProvider implements LeapListener, DataProvider {
 	public void addFingers(World newWorld, World lastWorld) {
 		for (com.leapmotion.leap.Finger finger : frame.fingers()) {
 			FingerBuilder lastFingerBuilder = lastWorld.getFingerBuilder(finger.id()).orElse(null);
-			FingerBuilder fingerBuilder = new FingerBuilder(finger.id(), lastFingerBuilder);
+			FingerType fingerType = null;
+			switch(finger.type()) {
+				case TYPE_INDEX: fingerType = FingerType.INDEX; break;
+				case TYPE_MIDDLE: fingerType = FingerType.MIDDLE; break;
+				case TYPE_PINKY: fingerType = FingerType.PINKY; break;
+				case TYPE_RING: fingerType = FingerType.RING; break;
+				case TYPE_THUMB: fingerType = FingerType.THUMB; break;
+			}
+			
+			FingerBuilder fingerBuilder = new FingerBuilder(finger.id(), fingerType, lastFingerBuilder);
 
 			HandBuilder handBuilder = newWorld.getHandBuilder(finger.hand().id()).get();
 			handBuilder.addFinger(fingerBuilder);

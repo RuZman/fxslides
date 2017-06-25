@@ -30,9 +30,9 @@
 		<StackPane GridPane.columnIndex="2" GridPane.rowIndex="1" styleClass="red-line-on-top" />
 		<StackPane GridPane.columnIndex="2" GridPane.rowIndex="2" styleClass="red-line-on-top" />
 	</GridPane>
-	<Circle fx:id="msgCircle" styleClass="msg-red-fill" />
-	<VBox fx:id="title" spacing="15">
-		<Label text="Gestensteuerung" styleClass="msg-presentation-title" />
-		<Label text="In der Zukunft zeigen wir's" styleClass="msg-presentation-subtitle" />
-	</VBox>
+	<ImageView id="minorityReport" preserveRatio="true" >    
+		<image>
+			<Image url="@../../images/169/minority-report.jpg" />
+		</image>
+	</ImageView>
 </StackPane>

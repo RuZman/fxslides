@@ -7,9 +7,9 @@ import com.sun.glass.ui.Application;
 import com.sun.glass.ui.Robot;
 
 import de.ruzman.common.Point;
+import de.ruzman.hui.OnUpdate;
 import de.ruzman.hui.SkeletonApp;
 import de.ruzman.hui.event.SkeletonEvent;
-import de.ruzman.hui.event.SkeletonListener;
 import de.ruzman.hui.skeleton.Hand;
 import de.ruzman.newfx.control.CursorPane.CursorPaneConfiguration;
 import de.ruzman.newfx.control.FXCursor.FXCursorConfiguration;
@@ -18,7 +18,7 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Cursor;
 
-public class StageDecorator implements SkeletonListener {
+public class StageDecorator {
 	private ObjectProperty<CursorPaneConfiguration<StageDecoratorConfiguration>> cursorPaneConfiguration = new SimpleObjectProperty<>();
 	private Map<Integer, FXCursorConfiguration> pointers = new HashMap<>();
 
@@ -26,7 +26,7 @@ public class StageDecorator implements SkeletonListener {
 		SkeletonApp.addListener(this);
 	}
 
-	@Override
+	@OnUpdate
 	public void onUpdate(SkeletonEvent event) {
 		for (Hand hand : event.getSkeleton().getHands()) {
 			if (hand.hasLeft()) {
@@ -96,10 +96,6 @@ public class StageDecorator implements SkeletonListener {
 		Robot robot = Application.GetApplication().createRobot();
 		robot.mouseMove(x.intValue(), y.intValue());
 		cursorPaneConfiguration.get().instance().getScene().setCursor(Cursor.DEFAULT);
-	}
-
-	@Override
-	public void onGesture(SkeletonEvent event) {
 	}
 	
 	public ReadOnlyObjectProperty<CursorPaneConfiguration<StageDecoratorConfiguration>> cursorPaneConfigurationProperty() {
