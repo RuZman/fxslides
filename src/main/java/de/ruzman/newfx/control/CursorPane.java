@@ -129,7 +129,6 @@ public class CursorPane extends Pane {
 		}
 		
 		public FXCursorConfiguration createOrUpdate(String id) {
-			System.out.println("pre inti?");
 			if(!fxCursorConfigurations.containsKey(id)) {
 				FXCursorConfiguration fxCursorConfiguration = new FXCursorConfiguration(this, parent.defaultCursorNode);
 				fxCursorConfigurations.put(id, fxCursorConfiguration);

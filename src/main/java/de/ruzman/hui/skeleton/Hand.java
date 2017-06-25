@@ -3,7 +3,6 @@ package de.ruzman.hui.skeleton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import de.ruzman.common.Point;
 import de.ruzman.hui.skeleton.Finger.FingerBuilder;
@@ -11,17 +10,26 @@ import de.ruzman.hui.skeleton.Skeleton.Type;
 
 public class Hand extends SkeletonPart {
 	private Optional<Point> palmPosition;
-	private List<Finger> fingers;
+	private Finger[] fingerIndex = new Finger[5];
+	private List<Finger> fingers = new ArrayList<>();
 	
 	private Hand(HandBuilder handBuilder) {
 		super(handBuilder);
 		this.palmPosition = Optional.ofNullable(handBuilder.palmPosition);
-		fingers = handBuilder.fingerBuilders.stream().map(fingerBuilder -> fingerBuilder.create())
-				.collect(Collectors.toList());
+		
+		for(FingerBuilder fingerBuilder: handBuilder.fingerBuilders) {
+			Finger finger = fingerBuilder.create();
+			fingerIndex[fingerBuilder.fingerType.ordinal()] = finger;
+			fingers.add(finger);
+		}
 	}
 	
 	public Optional<Point> getPalmPosition() {
 		return palmPosition;
+	}
+	
+	public Finger getFinger(FingerType fingerType) {
+		return fingerIndex[fingerType.ordinal()];
 	}
 	
 	public List<Finger> getFingers() {

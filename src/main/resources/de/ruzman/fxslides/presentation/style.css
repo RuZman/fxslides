@@ -39,3 +39,13 @@
 	-fx-border-width: 1 0 0 0;
 	-fx-border-style: solid;
 }
+
+.slide-title {
+	-fx-font-family: "Arial";
+	-fx-font-size: 30pt;
+}
+
+.slide-text {
+	-fx-font-family: "Arial";
+	-fx-font-size: 26pt;
+}

@@ -45,6 +45,8 @@ public class StageDecorator {
 						.move(palmPosition.getScreenPosition().getX(), palmPosition.getScreenPosition().getY()).save();
 			}
 		}
+		
+		cursorPaneConfiguration.get().fxCursors();
 	}
 	
 	private void onLeaving(Hand hand) {

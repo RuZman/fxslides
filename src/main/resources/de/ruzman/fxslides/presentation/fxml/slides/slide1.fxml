@@ -10,8 +10,8 @@
 <StackPane xmlns:fx="http://javafx.com/fxml"  fx:id="slide">
 	<GridPane>
 	    <columnConstraints>
-	        <ColumnConstraints percentWidth="6.5" />     
-	        <ColumnConstraints percentWidth="89.5" />
+	        <ColumnConstraints percentWidth="4" />     
+	        <ColumnConstraints percentWidth="92" />
 	        <ColumnConstraints percentWidth="4" />
 	    </columnConstraints>
 	    <rowConstraints>
@@ -20,9 +20,31 @@
 	        <RowConstraints percentHeight="6"/>    
 	    </rowConstraints> 
 	
+		<StackPane GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="slide-title">
+			<Label text="Minority Report" styleClass="Test" StackPane.alignment="CENTER_LEFT" />
+		</StackPane>
 		<StackPane GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="red-line-on-top" />
 		<StackPane GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="red-line-on-top" />
-		<StackPane GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="red-line-on-top" />
+		<StackPane GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="red-line-on-top">
+			<VBox alignment="CENTER_LEFT" spacing="20">
+				<HBox alignment="CENTER_LEFT" spacing="25">
+					<Circle radius="4" styleClass="msg-red-fill" />
+					<Label text="Unsichtbare UI-Elemente" styleClass="slide-text" />
+				</HBox>
+				<HBox alignment="CENTER_LEFT" spacing="25">
+					<Circle radius="4" styleClass="msg-red-fill" />
+					<Label text="Körperlich anstrengend" styleClass="slide-text" />
+				</HBox>
+				<HBox alignment="CENTER_LEFT" spacing="25">
+					<Circle radius="4" styleClass="msg-red-fill" />
+					<Label text="Lorem ipsum dolor" styleClass="slide-text" />
+				</HBox>
+				<HBox alignment="CENTER_LEFT" spacing="25">
+					<Circle radius="4" styleClass="msg-red-fill" />
+					<Label text="sit amet, lorem ipsum" styleClass="slide-text" />
+				</HBox>
+			</VBox>
+		</StackPane>
 		<StackPane GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="red-line-on-top">
 			<Label text="1" styleClass="msg-footer-pagenumber" StackPane.alignment="CENTER_RIGHT" />
 			<Label text="© msg | September 2017 | Gestensteuerung: In der Zukunft zeigen wir's" styleClass="msg-footer-copyright" StackPane.alignment="CENTER_LEFT" />

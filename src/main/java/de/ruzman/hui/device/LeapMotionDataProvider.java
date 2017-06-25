@@ -63,8 +63,10 @@ public class LeapMotionDataProvider implements LeapListener, DataProvider {
 				case TYPE_RING: fingerType = FingerType.RING; break;
 				case TYPE_THUMB: fingerType = FingerType.THUMB; break;
 			}
+			Point tipPosition = new Point(source, null, finger.stabilizedTipPosition());
 			
 			FingerBuilder fingerBuilder = new FingerBuilder(finger.id(), fingerType, lastFingerBuilder);
+			fingerBuilder.tipPosition(tipPosition);
 
 			HandBuilder handBuilder = newWorld.getHandBuilder(finger.hand().id()).get();
 			handBuilder.addFinger(fingerBuilder);

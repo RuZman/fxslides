@@ -10,19 +10,24 @@ import de.ruzman.hui.skeleton.Skeleton;
 
 public class SimplePalmDragAndDropGestureProvider implements GestureProvider {
 	private Integer x = null;
+	private String id;
+	
+	public SimplePalmDragAndDropGestureProvider(String id) {
+		this.id = id;
+	}
 	
 	@Override
 	public List<String> provideGesture(Skeleton skeleton) {
 		List<String> list = new ArrayList<>();
 		
 		if(drag(skeleton)) {
-			list.add("drag");
+			list.add(id + "drag");
 		}
 		if(dragStart(skeleton)) {
-			list.add("dragStart");
+			list.add(id + "dragStart");
 		}
 		if(drop(skeleton)) {
-			list.add("drop");
+			list.add(id + "drop");
 		}
 		
 		return list;
