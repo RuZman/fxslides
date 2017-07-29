@@ -39,13 +39,21 @@ public class LeapMotionDataProvider implements LeapListener, DataProvider {
 
 	@Override
 	public void addHands(World newWorld, World lastWorld) {
+		SkeletonBuilder skeletonBuilder = null;
 		for (com.leapmotion.leap.Hand hand : frame.hands()) {
 			Point palmPosition = new Point(source, null, hand.stabilizedPalmPosition());
+			Point wristPosition = new Point(source, null, hand.wristPosition());
+			
 			HandBuilder lastHandBuilder = lastWorld.getHandBuilder(hand.id()).orElse(null);
 			HandBuilder handBuilder = new HandBuilder(hand.id(), lastHandBuilder);
 			handBuilder.palmPosition(palmPosition);
+			handBuilder.wristPosition(wristPosition);
 
-			SkeletonBuilder skeletonBuilder = findOrCreateSkeleton(newWorld, lastWorld, handBuilder);
+			// FIXME: Sollte eigentlich für jede Hand, die nicht einer Person zugeordnet werden kann ein eigenes Skelett bilden
+			if(skeletonBuilder == null) {
+				skeletonBuilder = findOrCreateSkeleton(newWorld, lastWorld, handBuilder);
+			}
+			
 			skeletonBuilder.addHand(handBuilder);
 			newWorld.addSkeletonPart(skeletonBuilder, handBuilder);
 		}

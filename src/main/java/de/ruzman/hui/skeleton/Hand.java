@@ -10,12 +10,14 @@ import de.ruzman.hui.skeleton.Skeleton.Type;
 
 public class Hand extends SkeletonPart {
 	private Optional<Point> palmPosition;
+	private Optional<Point> wristPosition;
 	private Finger[] fingerIndex = new Finger[5];
 	private List<Finger> fingers = new ArrayList<>();
 	
 	private Hand(HandBuilder handBuilder) {
 		super(handBuilder);
 		this.palmPosition = Optional.ofNullable(handBuilder.palmPosition);
+		this.wristPosition = Optional.ofNullable(handBuilder.wristPosition);
 		
 		for(FingerBuilder fingerBuilder: handBuilder.fingerBuilders) {
 			Finger finger = fingerBuilder.create();
@@ -36,8 +38,13 @@ public class Hand extends SkeletonPart {
 		return fingers;
 	}
 
+	public Optional<Point> getWristPosition() {
+		return wristPosition;
+	}
+
 	public static class HandBuilder extends SkeletonPartBuilder<HandBuilder, Hand> {
 		private Point palmPosition = null;
+		private Point wristPosition = null;
 		private List<FingerBuilder> fingerBuilders = new ArrayList<>();
 
 		public HandBuilder(int id, HandBuilder lastHandBuilder) {
@@ -50,6 +57,12 @@ public class Hand extends SkeletonPart {
 		
 		public HandBuilder palmPosition(Point palmPosition) {
 			this.palmPosition = palmPosition;
+			return this;
+		}
+		
+
+		public HandBuilder wristPosition(Point wristPosition) {
+			this.wristPosition = wristPosition;
 			return this;
 		}
 		

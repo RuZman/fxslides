@@ -7,18 +7,27 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.geometry.*?>
 
-<StackPane xmlns:fx="http://javafx.com/fxml"  fx:id="slide">
+<StackPane xmlns:fx="http://javafx.com/fxml"  fx:id="slide" styleClass="slide">
 	<GridPane>
 	    <columnConstraints>
-	        <ColumnConstraints percentWidth="100" />        
+	        <ColumnConstraints percentWidth="6.5" /> 
+	        <ColumnConstraints percentWidth="93.5" />        
 	    </columnConstraints>
 	    <rowConstraints>
-	        <RowConstraints percentHeight="50"/> 
+	        <RowConstraints percentHeight="15"/> 
+	        <RowConstraints percentHeight="35"/> 
 	        <RowConstraints percentHeight="50"/>  
 	    </rowConstraints> 
 	
-		<StackPane GridPane.columnIndex="0" GridPane.rowIndex="0" />
-		<StackPane GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="slide0-bottom-background" />
+		<StackPane GridPane.columnIndex="1" GridPane.rowIndex="0">
+			<ImageView id="minorityReport" preserveRatio="true" StackPane.alignment="CENTER_LEFT">    
+				<image>
+					<Image url="@../../images/169/msg-logo1.png" />
+				</image>
+			</ImageView>
+		</StackPane>
+		<StackPane GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="slide0-bottom-background" />
+		<StackPane GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="slide0-bottom-background" />
 	</GridPane>
 	<Circle fx:id="msgCircle" styleClass="msg-red-fill" />
 	<VBox fx:id="title" spacing="15">

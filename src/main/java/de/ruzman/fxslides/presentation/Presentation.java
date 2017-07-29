@@ -6,15 +6,12 @@ import static javafx.scene.input.KeyCombination.NO_MATCH;
 import java.util.ResourceBundle;
 
 import de.ruzman.common.TrackingBox;
-import de.ruzman.fxslides.presentation.controller.slides.Slide0;
+import de.ruzman.fxslides.presentation.controller.slides.Slide0toSlide1;
 import de.ruzman.hui.SkeletonApp;
 import de.ruzman.leap.LeapApp;
 import io.datafx.controller.ViewConfiguration;
-import io.datafx.controller.flow.FlowContainer;
 import io.datafx.controller.flow.FlowException;
-import io.datafx.controller.flow.container.DefaultFlowContainer;
 import javafx.application.Application;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 public class Presentation extends Application {
@@ -38,7 +35,7 @@ public class Presentation extends Application {
 			ViewConfiguration viewConfiguration = new ViewConfiguration();
 			viewConfiguration.setResources(ResourceBundle.getBundle(baseName, GERMAN));
 			
-			FlowFixed flow = new FlowFixed(PresentationController.class, viewConfiguration);
+			FlowFixed flow = new FlowFixed(Slide0toSlide1.class, viewConfiguration);
 			
 			primaryStage.setFullScreenExitKeyCombination(NO_MATCH);
 			primaryStage.setFullScreen(true);

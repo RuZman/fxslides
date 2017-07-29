@@ -42,6 +42,11 @@ public class Point {
 		return Math.sqrt(Math.pow(absolutePosition.getY()-anotherPoint.getAbsolutePosition().getY(), 2));
 	}
 
+	public double yxDistanceTo(Point anotherPoint) {
+		return Math.sqrt(Math.pow(absolutePosition.getX()-anotherPoint.getAbsolutePosition().getX(), 2) +
+				Math.pow(absolutePosition.getY()-anotherPoint.getAbsolutePosition().getY(), 2));
+	}
+	
 	public double distanceTo(Point anotherPoint) {
 		return Math.sqrt(Math.pow(absolutePosition.getX()-anotherPoint.getAbsolutePosition().getX(), 2) +
 		Math.pow(absolutePosition.getY()-anotherPoint.getAbsolutePosition().getY(), 2) +

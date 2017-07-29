@@ -1,3 +1,7 @@
+.slide {
+	-fx-background-color: #ffffff;
+}
+
 .slide1-background {
 	-fx-background-image: url("images/169/minority-report.jpg");
 	-fx-background-size: cover;

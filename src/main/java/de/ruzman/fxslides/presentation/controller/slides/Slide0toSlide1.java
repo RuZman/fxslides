@@ -1,4 +1,4 @@
-package de.ruzman.fxslides.presentation;
+package de.ruzman.fxslides.presentation.controller.slides;
 
 import static java.util.Locale.GERMAN;
 
@@ -6,33 +6,28 @@ import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 
-import de.ruzman.fxslides.presentation.controller.slides.Slide0;
-import de.ruzman.fxslides.presentation.controller.slides.Slide1;
+import de.ruzman.fxslides.presentation.FlowFixed;
+import de.ruzman.fxslides.presentation.Presentation;
+import de.ruzman.fxslides.presentation.SimplePalmDragAndDropGestureProvider;
 import de.ruzman.hui.OnUpdate;
 import de.ruzman.hui.SkeletonApp;
 import de.ruzman.hui.event.SkeletonEvent;
-import de.ruzman.hui.skeleton.FingerType;
-import de.ruzman.leap.LeapApp;
-import de.ruzman.newfx.control.CursorNodeFactory;
 import io.datafx.controller.FXMLController;
 import io.datafx.controller.ViewConfiguration;
 import io.datafx.controller.flow.FlowException;
 import io.datafx.controller.util.VetoException;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
-@FXMLController("fxml/presentation.fxml")
-public class PresentationController {
+@FXMLController("../../fxml/slides/slide0toSlide1.fxml")
+public class Slide0toSlide1 {
 	@FXML
 	private StackPane presentation;
 
+	private FlowFixed flowSlide1;
+	
 	private StackPane slide0;
 	private StackPane slide1;
-
-	private FlowFixed flowSlide1;
 
 	private int startValue = 0; // Temp Drag&Drop value von Slide0 zu Slide1
 
@@ -43,19 +38,20 @@ public class PresentationController {
 		SkeletonApp.addListener(this);
 		SkeletonApp.addGestureProvider(dragAndDropProvider);
 
-		String baseName = getClass().getPackage().getName() + ".labels.labels";
+		String baseName = Presentation.class.getPackage().getName() + ".labels.labels";
 
 		ViewConfiguration viewConfiguration = new ViewConfiguration();
 		viewConfiguration.setResources(ResourceBundle.getBundle(baseName, GERMAN));
 
 		FlowFixed flowSlide0 = new FlowFixed(Slide0.class, viewConfiguration);
-		flowSlide1 = new FlowFixed(Slide1.class, viewConfiguration);
-		flowSlide1.withCallMethodAction(Slide1.class, "activate", "activate");
+		flowSlide1 = (FlowFixed) new FlowFixed(Slide1.class, viewConfiguration)
+				.withLink(Slide1.class, "test", Slide2.class);
+		flowSlide1.withCallMethodAction(Slide1.class, "activateSlide1", "activate");
 
+		
 		try {
 			slide0 = flowSlide0.start();
 			slide1 = flowSlide1.start();
-
 			presentation.getChildren().add(slide0);
 			presentation.getChildren().add(slide1);
 
@@ -88,7 +84,7 @@ public class PresentationController {
 			slide1.translateXProperty().unbind();
 			slide1.setTranslateX(0);
 			try {
-				flowSlide1.getFlowHandler().handle("activate");
+				flowSlide1.getFlowHandler().handle("activateSlide1");
 			} catch (VetoException | FlowException e) {
 				e.printStackTrace();
 			}

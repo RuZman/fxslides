@@ -7,6 +7,15 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.geometry.*?>
 
+
+
+<StackPane xmlns:fx="http://javafx.com/fxml"  fx:id="slide" styleClass="slideXY">
+
+	<ImageView id="minorityReport" preserveRatio="true" fitWidth="1920">    
+		<image>
+			<Image url="@../../images/169/enders-game.jpg" />
+		</image>
+	</ImageView>
 <StackPane xmlns:fx="http://javafx.com/fxml"  fx:id="slide" styleClass="slide">
 	<GridPane>
 	    <columnConstraints>
@@ -21,7 +30,7 @@
 	    </rowConstraints> 
 	
 		<StackPane GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="slide-title">
-			<Label text="Minority Report" styleClass="Test" StackPane.alignment="CENTER_LEFT" />
+			<Label text="Iron Man" styleClass="Test" StackPane.alignment="CENTER_LEFT" />
 		</StackPane>
 		<StackPane GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="red-line-on-top" />
 		<StackPane GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="red-line-on-top" />
@@ -29,22 +38,22 @@
 			<VBox alignment="CENTER_LEFT" spacing="20">
 				<HBox alignment="CENTER_LEFT" spacing="25">
 					<Circle radius="4" styleClass="msg-red-fill" />
-					<Label text="Unsichtbare UI-Elemente" styleClass="slide-text" />
+					<Label text="Interaktionsraum problematisch" styleClass="slide-text" />
 				</HBox>
 				<HBox alignment="CENTER_LEFT" spacing="25">
 					<Circle radius="4" styleClass="msg-red-fill" />
-					<Label text="Körperlich anstrengend" styleClass="slide-text" />
+					<Label text="Komplizierte Steuerung" styleClass="slide-text" />
 				</HBox>
 				<HBox alignment="CENTER_LEFT" spacing="25">
 					<Circle radius="4" styleClass="msg-red-fill" />
-					<Label text="Lorem ipsum dolor" styleClass="slide-text" />
-				</HBox>
-				<HBox alignment="CENTER_LEFT" spacing="25">
-					<Circle radius="4" styleClass="msg-red-fill" />
-					<Label text="sit amet, lorem ipsum" styleClass="slide-text" />
+					<Label text="Haptik fehlt" styleClass="slide-text" />
 				</HBox>
 			</VBox>
-			<Button text="Hm OK" fx:id="testButton" />
+			<ImageView preserveRatio="true"  StackPane.alignment="CENTER_RIGHT">    
+				<image>
+					<Image url="@../../images/169/iron-man.jpg" />
+				</image>
+			</ImageView>
 		</StackPane>
 		<StackPane GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="red-line-on-top">
 			<Label text="1" styleClass="msg-footer-pagenumber" StackPane.alignment="CENTER_RIGHT" />
@@ -53,9 +62,5 @@
 		<StackPane GridPane.columnIndex="2" GridPane.rowIndex="1" styleClass="red-line-on-top" />
 		<StackPane GridPane.columnIndex="2" GridPane.rowIndex="2" styleClass="red-line-on-top" />
 	</GridPane>
-	<ImageView id="minorityReport" preserveRatio="true" >    
-		<image>
-			<Image url="@../../images/169/minority-report.jpg" />
-		</image>
-	</ImageView>
+</StackPane>
 </StackPane>
